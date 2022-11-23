@@ -1,9 +1,19 @@
 package com.shivraj.demo.entity;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
 public class Token {
 
+
+
     private  String access_token;
+
+
     private  String token_type;
+
 
     public Token() {
         super();

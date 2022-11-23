@@ -1,18 +1,16 @@
 package com.shivraj.demo.controller;
 
-import com.shivraj.demo.entity.Clever;
+import com.shivraj.demo.config.AppConstants;
 import com.shivraj.demo.entity.Token;
+import com.shivraj.demo.payload.meApi.MeResponce;
+import com.shivraj.demo.service.AuthService;
 import com.shivraj.demo.service.CleverService;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
+
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
+
 
 import java.io.IOException;
 
@@ -26,8 +24,7 @@ public class CleverController {
     private CleverService cleverService;
 
     @Autowired
-    RestTemplate restTemplate;
-
+    private AuthService authService;
 
 
     @PostMapping("/getToken")
@@ -38,21 +35,21 @@ public class CleverController {
         return s;
     }
 
-//    @PostMapping("/fetchCode")
-//    public ResponseEntity<Token> fetchTokenFromCode(@RequestBody Clever clever){
-//        try{
-//            String url = "https://clever.com/oauth/tokens";
-//
-//           // ResponseEntity<String> token = restTemplate.postForEntity(url , clever , String.class).a
-//
-//
-//
-//        }catch(Exception e){
-//            e.printStackTrace();
-//            return new ResponseEntity("Error ! Please try with latest url code",HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-//        return new ResponseEntity<Token>();
-//    }
+    @PostMapping("/getAccessToken")
+    public Token getAccessToken(@RequestBody String url) throws IOException, ParseException {
+
+        Token token = authService.getAccessToken(url);
+        return token;
+    }
+
+    @GetMapping("/meInfo")
+    public MeResponce getMeInfo(@RequestHeader(AppConstants.HEADER_STRING) String token) throws IOException {
+
+        MeResponce meResponce = authService.GetMeInfo(token);
+
+
+        return meResponce;
+    }
 
 
 

@@ -45,17 +45,7 @@ public class CleverServiceImpl implements CleverService {
         System.out.println("Me Info"+finalInfo);
 
       String info = getUserInfo(finalInfo);
-
-//        JSONParser jsonParser = new JSONParser();
-//
-//        JSONObject jsonObject = (JSONObject) jsonParser.parse(info);
-//
-//        JSONObject data = (JSONObject) jsonObject.get("data");
-//        JSONObject name = (JSONObject) data.get("name");
-//
-//        String fname = (String) name.get("name");
-
-        return info;
+      return info;
     }
 
     public String getApiCall(String url , String token) throws IOException {
