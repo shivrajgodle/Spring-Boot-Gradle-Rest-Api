@@ -13,4 +13,6 @@ public class AppConstants {
     public static final String SORT_BY = "id";
     public static final String SORT_DIR = "asc";
 
+    public static final String INVALID_ACCESS_TOKEN = "Invalid access token";
+
 }

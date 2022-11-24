@@ -1,8 +1,8 @@
 package com.shivraj.demo.controller;
 
 import com.shivraj.demo.config.AppConstants;
+import com.shivraj.demo.payload.getAllUsers.AllUserData;
 import com.shivraj.demo.payload.getSectionByUser.UserWiseSection;
-import com.shivraj.demo.payload.getSectionByUser.UserWiseSectionResponse;
 import com.shivraj.demo.service.NewUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,7 +26,18 @@ public class NewUserController {
 
         UserWiseSection userWiseSection = newUserService.GetSectionByUser(token,id);
 
+
         return new ResponseEntity<UserWiseSection>(userWiseSection, HttpStatus.OK) ;
+    }
+
+    @GetMapping("/allusers")
+    public ResponseEntity<AllUserData>  getSectionByUser(@RequestHeader(AppConstants.HEADER_STRING) String token) throws IOException {
+
+
+        AllUserData allUsers = newUserService.getAllUsers(token);
+
+
+        return new ResponseEntity<AllUserData>(allUsers, HttpStatus.OK) ;
     }
 
 }

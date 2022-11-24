@@ -3,6 +3,7 @@ package com.shivraj.demo.payload.getSectionByUser;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -33,5 +34,13 @@ public class UserWiseSection {
 
     public void setLinks(Link[] links) {
         this.links = links;
+    }
+
+    @Override
+    public String toString() {
+        return "UserWiseSection{" +
+                "data=" + Arrays.toString(data) +
+                ", links=" + Arrays.toString(links) +
+                '}';
     }
 }

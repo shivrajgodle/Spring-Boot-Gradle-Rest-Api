@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shivraj.demo.config.AppConstants;
 import com.shivraj.demo.entity.Clever;
 import com.shivraj.demo.entity.Token;
+import com.shivraj.demo.exception.ResourceNotFoundException;
+import com.shivraj.demo.exception.TokenNotFoundException;
 import com.shivraj.demo.payload.meApi.MeResponce;
 import com.shivraj.demo.service.AuthService;
 import com.squareup.okhttp.*;
@@ -50,6 +52,11 @@ public class AuthServiceImpl implements AuthService {
                 .addHeader("content-type", "application/json")
                 .build();
 
+//        Response response = client.newCall(request).execute();
+//
+//        if(!response.isSuccessful()) throw new TokenNotFoundException("Auth Token","Authorization Code",url);
+
+
         ResponseBody responseBody = client.newCall(request).execute().body();
 
 
@@ -76,6 +83,10 @@ public class AuthServiceImpl implements AuthService {
                 .addHeader("accept", "application/json")
                 .addHeader("Authorization", token)
                 .build();
+
+        Response response = client.newCall(request).execute();
+
+        if(!response.isSuccessful()) throw new ResourceNotFoundException("userInfo","Token",AppConstants.INVALID_ACCESS_TOKEN);
 
         ResponseBody responseBody = client.newCall(request).execute().body();
         MeResponce meResponce = objectMapper.readValue(responseBody.string() , MeResponce.class);
