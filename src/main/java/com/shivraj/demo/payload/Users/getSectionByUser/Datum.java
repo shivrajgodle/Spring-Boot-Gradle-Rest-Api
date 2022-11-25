@@ -1,20 +1,16 @@
-package com.shivraj.demo.payload.getSectionByUser;
+package com.shivraj.demo.payload.Users.getSectionByUser;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Datum {
     private Data data;
     private String uri;
 
-    public Datum() {
-        super();
-    }
 
-    public Datum(Data data, String uri) {
-        this.data = data;
-        this.uri = uri;
-    }
+
 
     public Data getData() {
         return data;

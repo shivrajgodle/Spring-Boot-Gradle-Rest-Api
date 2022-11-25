@@ -1,8 +1,9 @@
 package com.shivraj.demo.controller;
 
 import com.shivraj.demo.config.AppConstants;
-import com.shivraj.demo.payload.getAllUsers.AllUserData;
-import com.shivraj.demo.payload.getSectionByUser.UserWiseSection;
+import com.shivraj.demo.payload.Users.getAllUsers.AllUserData;
+import com.shivraj.demo.payload.Users.getAllUsers.AllUserResponce;
+import com.shivraj.demo.payload.Users.getSectionByUser.UserWiseSection;
 import com.shivraj.demo.service.NewUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,13 +32,37 @@ public class NewUserController {
     }
 
     @GetMapping("/allusers")
-    public ResponseEntity<AllUserData>  getSectionByUser(@RequestHeader(AppConstants.HEADER_STRING) String token) throws IOException {
+    public ResponseEntity<AllUserData> getSectionByUser(@RequestHeader(AppConstants.HEADER_STRING) String token) throws IOException {
 
+        System.out.println("harsh"+token);
 
         AllUserData allUsers = newUserService.getAllUsers(token);
 
 
         return new ResponseEntity<AllUserData>(allUsers, HttpStatus.OK) ;
     }
+
+//    @GetMapping("/allusersWithFilter")
+//    public ResponseEntity<AllUserData>  getSectionByUserWithPagination(@RequestHeader(AppConstants.HEADER_STRING) String token , @RequestParam(value = "school_name", defaultValue = "") String schoolName,
+//                                                               @RequestParam(value = "limit", defaultValue = "1") Integer limit,
+//                                                               @RequestParam(value = "role", defaultValue = "contact") String role,
+//                                                               @RequestParam(value = "starting_after", defaultValue = "6324f28bd19bb414ab822add") String starting_after,
+//                                                               @RequestParam(value = "ending_before", defaultValue = "6324f28bd19bb414ab822ad1") String ending_before, @RequestParam(value = "count", defaultValue = "false") String count) throws IOException {
+//
+//        AllUserData allUsers = newUserService.getSectionByUserWithPagination(token,limit,role,starting_after,ending_before,count);
+//
+//
+//        return new ResponseEntity<AllUserData>(allUsers, HttpStatus.OK) ;
+//    }
+
+    @GetMapping("/allusersWithFilter")
+    public ResponseEntity<AllUserData>  getSectionByUserWithPagination(@RequestHeader(AppConstants.HEADER_STRING) String token, @RequestParam(value = "limit", defaultValue = "5") Integer limit) throws IOException {
+
+        AllUserData allUsers = newUserService.getSectionByUserWithPagination(token,limit);
+
+
+        return new ResponseEntity<AllUserData>(allUsers, HttpStatus.OK) ;
+    }
+
 
 }

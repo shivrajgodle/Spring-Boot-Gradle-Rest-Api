@@ -1,10 +1,13 @@
-package com.shivraj.demo.payload.getSectionByUser;
+package com.shivraj.demo.payload.Users.getSectionByUser;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.time.OffsetDateTime;
 import java.util.Date;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 
 public class Data {
 
@@ -25,28 +28,6 @@ public class Data {
     private String term_id;
     private String id;
 
-    public Data() {
-        super();
-    }
-
-    public Data(String course, Date created, String district, String grade, Date last_modified, String name, String period, String school, String section_number, String sis_id, String[] students, String subject, String teacher, String[] teachers, String term_id, String id) {
-        this.course = course;
-        this.created = created;
-        this.district = district;
-        this.grade = grade;
-        this.last_modified = last_modified;
-        this.name = name;
-        this.period = period;
-        this.school = school;
-        this.section_number = section_number;
-        this.sis_id = sis_id;
-        this.students = students;
-        this.subject = subject;
-        this.teacher = teacher;
-        this.teachers = teachers;
-        this.term_id = term_id;
-        this.id = id;
-    }
 
     public String getCourse() {
         return course;

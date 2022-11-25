@@ -1,24 +1,18 @@
-package com.shivraj.demo.payload.getSectionByUser;
+package com.shivraj.demo.payload.Users.getSectionByUser;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserWiseSection {
     public Datum[] data;
     public Link[] links;
 
-    public UserWiseSection() {
-        super();
-    }
 
-    public UserWiseSection(Datum[] data, Link[] links) {
-        this.data = data;
-        this.links = links;
-    }
 
     public Datum[] getData() {
         return data;

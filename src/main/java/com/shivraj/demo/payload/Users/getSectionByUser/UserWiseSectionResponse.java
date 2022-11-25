@@ -1,7 +1,12 @@
-package com.shivraj.demo.payload.getSectionByUser;
+package com.shivraj.demo.payload.Users.getSectionByUser;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserWiseSectionResponse {
 
     private List<UserWiseSection> content;
@@ -10,19 +15,6 @@ public class UserWiseSectionResponse {
     private Long totalElements;
     private int totalPages;
     private boolean lastPage;
-
-    public UserWiseSectionResponse() {
-        super();
-    }
-
-    public UserWiseSectionResponse(List<UserWiseSection> content, int pageNumber, int pageSize, Long totalElements, int totalPages, boolean lastPage) {
-        this.content = content;
-        this.pageNumber = pageNumber;
-        this.pageSize = pageSize;
-        this.totalElements = totalElements;
-        this.totalPages = totalPages;
-        this.lastPage = lastPage;
-    }
 
     public List<UserWiseSection> getContent() {
         return content;
