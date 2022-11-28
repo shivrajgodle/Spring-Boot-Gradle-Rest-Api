@@ -3,7 +3,12 @@ package com.shivraj.demo.controller;
 import com.shivraj.demo.config.AppConstants;
 import com.shivraj.demo.payload.Users.getAllUsers.AllUserData;
 import com.shivraj.demo.payload.Users.getAllUsers.AllUserResponce;
+import com.shivraj.demo.payload.Users.getContactUserForStudent.GetContactUserForStudent;
+import com.shivraj.demo.payload.Users.getDistrictForUser.GetDistrictForUser;
+import com.shivraj.demo.payload.Users.getSchoolForUser.GetSchoolForUser;
 import com.shivraj.demo.payload.Users.getSectionByUser.UserWiseSection;
+import com.shivraj.demo.payload.Users.getStudentForTeacher.GetStudentsForTeacher;
+import com.shivraj.demo.payload.Users.getTeacherForStudent.GetTeacherForStudent;
 import com.shivraj.demo.service.NewUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,5 +69,39 @@ public class NewUserController {
         return new ResponseEntity<AllUserData>(allUsers, HttpStatus.OK) ;
     }
 
+
+    @GetMapping("users/{id}/district")
+    public ResponseEntity<GetDistrictForUser> getDistrictForUser(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id) throws IOException {
+        GetDistrictForUser getDistrictForUser = newUserService.getDistrictForUser(token,id);
+
+        return new ResponseEntity<GetDistrictForUser>(getDistrictForUser,HttpStatus.OK);
+
+    }
+
+    @GetMapping("users/{id}/mycontacts")
+    public ResponseEntity<GetContactUserForStudent> getContactUserForStudent(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id) throws IOException {
+        GetContactUserForStudent getContactUserForStudent = newUserService.getContactUserForStudent(token,id);
+        return new ResponseEntity<GetContactUserForStudent>(getContactUserForStudent,HttpStatus.OK);
+    }
+
+    @GetMapping("users/{id}/mystudents")
+    public ResponseEntity<GetStudentsForTeacher> getStudentsForTeacher(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id) throws IOException {
+        GetStudentsForTeacher getStudentsForTeacher = newUserService.getStudentsForTeacher(token,id);
+        return new ResponseEntity<GetStudentsForTeacher>(getStudentsForTeacher,HttpStatus.OK);
+    }
+
+    @GetMapping("users/{id}/myteachers")
+    public ResponseEntity<GetTeacherForStudent> getTeacherForStudent(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id) throws IOException {
+
+        GetTeacherForStudent getTeacherForStudent = newUserService.getTeacherForStudent(token,id);
+        return new ResponseEntity<GetTeacherForStudent>(getTeacherForStudent,HttpStatus.OK);
+    }
+
+    @GetMapping("users/{id}/schools")
+    public ResponseEntity<GetSchoolForUser> getSchoolForUser(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id) throws IOException {
+
+        GetSchoolForUser getSchoolForUser = newUserService.getSchoolForUser(token,id);
+        return new ResponseEntity<GetSchoolForUser>(getSchoolForUser,HttpStatus.OK);
+    }
 
 }

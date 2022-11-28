@@ -5,7 +5,12 @@ import com.shivraj.demo.config.AppConstants;
 import com.shivraj.demo.exception.ResourceNotFoundException;
 import com.shivraj.demo.payload.Users.getAllUsers.AllUserData;
 import com.shivraj.demo.payload.Users.getAllUsers.AllUserResponce;
+import com.shivraj.demo.payload.Users.getContactUserForStudent.GetContactUserForStudent;
+import com.shivraj.demo.payload.Users.getDistrictForUser.GetDistrictForUser;
+import com.shivraj.demo.payload.Users.getSchoolForUser.GetSchoolForUser;
 import com.shivraj.demo.payload.Users.getSectionByUser.UserWiseSection;
+import com.shivraj.demo.payload.Users.getStudentForTeacher.GetStudentsForTeacher;
+import com.shivraj.demo.payload.Users.getTeacherForStudent.GetTeacherForStudent;
 import com.shivraj.demo.service.NewUserService;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -112,15 +117,126 @@ public class NewUserServiceImpl implements NewUserService {
                 .addHeader("authorization", token)
                 .build();
 
-        //  Response response = client.newCall(request).execute();
+          Response response = client.newCall(request).execute();
 
-        //  if(!response.isSuccessful()) throw new ResourceNotFoundException("All user Info","Token", AppConstants.INVALID_ACCESS_TOKEN);
+          if(!response.isSuccessful()) throw new ResourceNotFoundException("All user Info","Token", AppConstants.INVALID_ACCESS_TOKEN);
 
         ResponseBody responseBody = client.newCall(request).execute().body();
 
         AllUserData  allUsers =  objectMapper.readValue(responseBody.string() , AllUserData.class);
 
         return allUsers;
+    }
+
+    @Override
+    public GetDistrictForUser getDistrictForUser(String token, String Userid) throws IOException {
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://api.clever.com/v3.0/users/"+Userid+"/district")
+                .get()
+                .addHeader("accept", "application/json")
+                .addHeader("authorization", token)
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        if(!response.isSuccessful()) throw new ResourceNotFoundException("District Info","UserId", Userid);
+
+        ResponseBody responseBody = client.newCall(request).execute().body();
+
+        GetDistrictForUser getDistrictForUser =  objectMapper.readValue(responseBody.string() , GetDistrictForUser.class);
+
+        return getDistrictForUser;
+    }
+
+    @Override
+    public GetContactUserForStudent getContactUserForStudent(String token, String Userid) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://api.clever.com/v3.0/users/"+Userid+"/mycontacts")
+                .get()
+                .addHeader("accept", "application/json")
+                .addHeader("authorization", token)
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        if(!response.isSuccessful()) throw new ResourceNotFoundException("Contact User Info","UserId", Userid);
+
+        ResponseBody responseBody = client.newCall(request).execute().body();
+
+        GetContactUserForStudent getContactUserForStudent =  objectMapper.readValue(responseBody.string() , GetContactUserForStudent.class);
+
+        return getContactUserForStudent;
+    }
+
+    @Override
+    public GetStudentsForTeacher getStudentsForTeacher(String token, String Userid) throws IOException {
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://api.clever.com/v3.0/users/"+Userid+"/mystudents")
+                .get()
+                .addHeader("accept", "application/json")
+                .addHeader("authorization", token)
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        if(!response.isSuccessful()) throw new ResourceNotFoundException("Student Info","UserId", Userid);
+
+        ResponseBody responseBody = client.newCall(request).execute().body();
+
+        GetStudentsForTeacher getStudentsForTeacher =  objectMapper.readValue(responseBody.string() , GetStudentsForTeacher.class);
+
+        return getStudentsForTeacher;
+    }
+
+    @Override
+    public GetTeacherForStudent getTeacherForStudent(String token, String Userid) throws IOException {
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://api.clever.com/v3.0/users/"+Userid+"/myteachers")
+                .get()
+                .addHeader("accept", "application/json")
+                .addHeader("authorization", token)
+                .build();
+
+        Response response = client.newCall(request).execute();
+        if(!response.isSuccessful()) throw new ResourceNotFoundException("Teacher Info","UserId", Userid);
+
+        ResponseBody responseBody = client.newCall(request).execute().body();
+
+        GetTeacherForStudent getTeacherForStudent =  objectMapper.readValue(responseBody.string() , GetTeacherForStudent.class);
+
+        return getTeacherForStudent;
+    }
+
+    @Override
+    public GetSchoolForUser getSchoolForUser(String token, String Userid) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://api.clever.com/v3.0/users/"+Userid+"/schools")
+                .get()
+                .addHeader("accept", "application/json")
+                .addHeader("authorization", token)
+                .build();
+
+        Response response = client.newCall(request).execute();
+        if(!response.isSuccessful()) throw new ResourceNotFoundException("School Info","UserId", Userid);
+
+        ResponseBody responseBody = client.newCall(request).execute().body();
+
+        GetSchoolForUser getSchoolForUser =  objectMapper.readValue(responseBody.string() , GetSchoolForUser.class);
+
+        return getSchoolForUser;
     }
 
 }
