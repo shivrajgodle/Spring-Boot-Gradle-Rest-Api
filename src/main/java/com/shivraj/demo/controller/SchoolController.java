@@ -3,6 +3,7 @@ package com.shivraj.demo.controller;
 import com.shivraj.demo.config.AppConstants;
 import com.shivraj.demo.payload.school.getAllSchool.AllSchool;
 import com.shivraj.demo.payload.school.getCoursesForSchool.GetCoursesForSchool;
+import com.shivraj.demo.payload.school.getDistrictForSchool.GetDistrictForSchool;
 import com.shivraj.demo.payload.school.getSchoolById.GetSchoolById;
 import com.shivraj.demo.payload.school.getSchoolByUser.GetSchoolByUser;
 import com.shivraj.demo.service.SchoolService;
@@ -51,6 +52,15 @@ public class SchoolController {
 
         GetCoursesForSchool getCoursesForSchool = schoolService.getCoursesForSchool(token,id);
         return new ResponseEntity<GetCoursesForSchool>(getCoursesForSchool,HttpStatus.OK);
+    }
+
+    @GetMapping("/schools/{id}/district")
+    public ResponseEntity<GetDistrictForSchool> getTheDistrictForSchool(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id) throws IOException {
+
+        GetDistrictForSchool getDistrictForSchool = schoolService.getDistrictForSchool(token,id);
+
+        return new ResponseEntity<GetDistrictForSchool>(getDistrictForSchool , HttpStatus.OK);
+
     }
 
 }

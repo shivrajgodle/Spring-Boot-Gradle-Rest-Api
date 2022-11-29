@@ -1,4 +1,4 @@
-package com.shivraj.demo.payload.Users.getSchoolForUser;
+package com.shivraj.demo.payload.school.getSectionForSchool;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -6,32 +6,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GetSchoolForUser {
+public class GetSectionForSchool {
+
 
     @JsonProperty("links")
     private List<LinksDTO> links;
     @JsonProperty("data")
     private List<NewDataDTO> data;
-
-
-    public GetSchoolForUser() {
-        super();
-    }
-
-    public GetSchoolForUser(List<LinksDTO> links, List<NewDataDTO> data) {
-        this.links = links;
-        this.data = data;
-    }
-
-    @Override
-    public String toString() {
-        return "GetSchoolForUser{" +
-                "links=" + links +
-                ", data=" + data +
-                '}';
-    }
 
     public List<LinksDTO> getLinks() {
         return links;

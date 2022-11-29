@@ -5,10 +5,11 @@ import com.shivraj.demo.config.AppConstants;
 import com.shivraj.demo.entity.Clever;
 import com.shivraj.demo.entity.Token;
 import com.shivraj.demo.exception.ResourceNotFoundException;
-import com.shivraj.demo.exception.TokenNotFoundException;
+import com.shivraj.demo.payload.auth.GetAccessToken;
 import com.shivraj.demo.payload.meApi.MeResponce;
 import com.shivraj.demo.service.AuthService;
 import com.squareup.okhttp.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -20,6 +21,10 @@ import java.util.regex.Pattern;
 @Service
 public class AuthServiceImpl implements AuthService {
 
+    @Autowired
+    ObjectMapper objectMapper;
+
+
     @Override
     public Token getAccessToken(String url) throws IOException {
 
@@ -30,7 +35,6 @@ public class AuthServiceImpl implements AuthService {
         String Code = RedirectLink.substring(56,76);
 
 
-        ObjectMapper objectMapper = new ObjectMapper();
 
         Clever c = new Clever();
         c.setCode(Code);
@@ -71,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
 
     public MeResponce GetMeInfo(String token) throws IOException {
 
-        ObjectMapper objectMapper = new ObjectMapper();
+
 
         String url = "https://api.clever.com/v3.0/me";
 
@@ -96,6 +100,23 @@ public class AuthServiceImpl implements AuthService {
         return meResponce;
     }
 
+    @Override
+    public GetAccessToken getNewAccessToken(String token) throws IOException {
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://clever.com/oauth/tokens?owner_type=district")
+                .get()
+                .addHeader("accept", "application/json")
+                .addHeader("Authorization",token)
+                .build();
+
+        ResponseBody responseBody = client.newCall(request).execute().body();
+        return objectMapper.readValue(responseBody.string() , GetAccessToken.class);
+
+
+    }
 
 
     public static List<String> extractUrls(String text)

@@ -47,19 +47,6 @@ public class NewUserController {
         return new ResponseEntity<AllUserData>(allUsers, HttpStatus.OK) ;
     }
 
-//    @GetMapping("/allusersWithFilter")
-//    public ResponseEntity<AllUserData>  getSectionByUserWithPagination(@RequestHeader(AppConstants.HEADER_STRING) String token , @RequestParam(value = "school_name", defaultValue = "") String schoolName,
-//                                                               @RequestParam(value = "limit", defaultValue = "1") Integer limit,
-//                                                               @RequestParam(value = "role", defaultValue = "contact") String role,
-//                                                               @RequestParam(value = "starting_after", defaultValue = "6324f28bd19bb414ab822add") String starting_after,
-//                                                               @RequestParam(value = "ending_before", defaultValue = "6324f28bd19bb414ab822ad1") String ending_before, @RequestParam(value = "count", defaultValue = "false") String count) throws IOException {
-//
-//        AllUserData allUsers = newUserService.getSectionByUserWithPagination(token,limit,role,starting_after,ending_before,count);
-//
-//
-//        return new ResponseEntity<AllUserData>(allUsers, HttpStatus.OK) ;
-//    }
-
     @GetMapping("/allusersWithFilter")
     public ResponseEntity<AllUserData>  getSectionByUserWithPagination(@RequestHeader(AppConstants.HEADER_STRING) String token, @RequestParam(value = "limit", defaultValue = "5") Integer limit) throws IOException {
 

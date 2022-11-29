@@ -22,10 +22,7 @@ public class CourseController {
 
     @GetMapping("/getAllCourses")
     public ResponseEntity<AllCourses> GetAllCourses(@RequestHeader(AppConstants.HEADER_STRING) String Token) throws IOException {
-
         AllCourses allCourses = courseService.getAllCourses(Token);
-
         return new ResponseEntity<AllCourses>(allCourses, HttpStatus.OK);
-
     }
 }

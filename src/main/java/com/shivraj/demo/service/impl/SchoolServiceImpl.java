@@ -5,6 +5,7 @@ import com.shivraj.demo.config.AppConstants;
 import com.shivraj.demo.exception.ResourceNotFoundException;
 import com.shivraj.demo.payload.school.getAllSchool.AllSchool;
 import com.shivraj.demo.payload.school.getCoursesForSchool.GetCoursesForSchool;
+import com.shivraj.demo.payload.school.getDistrictForSchool.GetDistrictForSchool;
 import com.shivraj.demo.payload.school.getSchoolById.GetSchoolById;
 import com.shivraj.demo.payload.school.getSchoolByUser.GetSchoolByUser;
 import com.shivraj.demo.service.SchoolService;
@@ -88,6 +89,26 @@ public class SchoolServiceImpl implements SchoolService {
 
         return objectMapper.readValue(responseBody.string() , GetCoursesForSchool.class);
 
+    }
+
+    @Override
+    public GetDistrictForSchool getDistrictForSchool(String token, String id) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://api.clever.com/v3.0/schools/"+id+"/district")
+                .get()
+                .addHeader("accept", "application/json")
+                .addHeader("authorization", token)
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        if(!response.isSuccessful()) throw new ResourceNotFoundException("District Info","ID", id);
+
+        ResponseBody responseBody = client.newCall(request).execute().body();
+
+        return objectMapper.readValue(responseBody.string() , GetDistrictForSchool.class);
     }
 
     @Override
