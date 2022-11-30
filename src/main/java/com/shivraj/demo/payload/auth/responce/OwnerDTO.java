@@ -1,4 +1,4 @@
-package com.shivraj.demo.payload.auth;
+package com.shivraj.demo.payload.auth.responce;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -29,11 +29,19 @@ public class OwnerDTO {
         this.type = type;
     }
 
-    public String id() {
+    public String getId() {
         return id;
     }
 
-    public void setDistrict_id(String id) {
+    public void setId(String id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "OwnerDTO{" +
+                "type='" + type + '\'' +
+                ", id='" + id + '\'' +
+                '}';
     }
 }

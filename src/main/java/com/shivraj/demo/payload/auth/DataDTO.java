@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class DataDTO {
@@ -18,8 +16,17 @@ public class DataDTO {
     private OwnerDTO owner;
     @JsonProperty("access_token")
     private String accessToken;
-    @JsonProperty("scopes")
-    private List<String> scopes;
+
+    public DataDTO() {
+        super();
+    }
+
+    public DataDTO(String id, String created, OwnerDTO owner, String accessToken) {
+        this.id = id;
+        this.created = created;
+        this.owner = owner;
+        this.accessToken = accessToken;
+    }
 
     public String getId() {
         return id;
@@ -51,13 +58,5 @@ public class DataDTO {
 
     public void setAccessToken(String accessToken) {
         this.accessToken = accessToken;
-    }
-
-    public List<String> getScopes() {
-        return scopes;
-    }
-
-    public void setScopes(List<String> scopes) {
-        this.scopes = scopes;
     }
 }

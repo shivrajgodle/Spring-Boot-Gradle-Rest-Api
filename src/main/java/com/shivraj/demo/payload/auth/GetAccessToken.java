@@ -10,8 +10,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GetAccessToken {
-
-
     @JsonProperty("data")
     private List<DataDTO> data;
 
@@ -21,5 +19,20 @@ public class GetAccessToken {
 
     public void setData(List<DataDTO> data) {
         this.data = data;
+    }
+
+    public GetAccessToken() {
+        super();
+    }
+
+    public GetAccessToken(List<DataDTO> data) {
+        this.data = data;
+    }
+
+    @Override
+    public String toString() {
+        return "GetAccessToken{" +
+                "data=" + data +
+                '}';
     }
 }

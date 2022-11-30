@@ -9,6 +9,9 @@ import com.shivraj.demo.payload.auth.GetAccessToken;
 import com.shivraj.demo.payload.meApi.MeResponce;
 import com.shivraj.demo.service.AuthService;
 import com.squareup.okhttp.*;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -101,8 +104,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public GetAccessToken getNewAccessToken(String token) throws IOException {
+    public GetAccessToken getNewAccessToken(String token) throws IOException, ParseException {
 
+        JSONParser jsonParser = new JSONParser();
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
@@ -111,10 +115,8 @@ public class AuthServiceImpl implements AuthService {
                 .addHeader("accept", "application/json")
                 .addHeader("Authorization",token)
                 .build();
-
         ResponseBody responseBody = client.newCall(request).execute().body();
         return objectMapper.readValue(responseBody.string() , GetAccessToken.class);
-
 
     }
 
