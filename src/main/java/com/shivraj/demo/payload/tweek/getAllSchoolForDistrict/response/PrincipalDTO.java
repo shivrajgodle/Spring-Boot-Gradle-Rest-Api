@@ -1,4 +1,4 @@
-package com.shivraj.demo.payload.tweek;
+package com.shivraj.demo.payload.tweek.getAllSchoolForDistrict.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

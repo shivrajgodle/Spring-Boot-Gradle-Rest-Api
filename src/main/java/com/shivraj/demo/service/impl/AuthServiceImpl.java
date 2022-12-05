@@ -9,11 +9,12 @@ import com.shivraj.demo.payload.auth.GetAccessToken;
 import com.shivraj.demo.payload.meApi.MeResponce;
 import com.shivraj.demo.service.AuthService;
 import com.squareup.okhttp.*;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +27,37 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     ObjectMapper objectMapper;
+
+
+    @Override
+    public boolean isValidAccessToken(String token) throws ResponseStatusException, IOException {
+
+        if (token != null && !token.contains("undefined")) {
+            try {
+                MeResponce meResponce = GetMeInfo(token);
+                return true;
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Access token");
+            }
+        }
+        return false;
+    }
+
+    public boolean isValidAuthToken(String token) throws ResponseStatusException, IOException {
+
+        if (token != null && !token.contains("undefined")) {
+            try {
+                GetAccessToken getAccessToken = getNewAccessToken(token);
+                if(getAccessToken.getData().get(0).getId() == null){
+                    return false;
+                }
+                return true;
+            } catch (Exception e) {
+                throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid Auth Token");
+            }
+        }
+        return false;
+    }
 
 
     @Override
@@ -69,8 +101,6 @@ public class AuthServiceImpl implements AuthService {
 
         Token t = objectMapper.readValue(responseBody.string() , Token.class);
 
-        System.out.println("token values are"+t);
-
         return t;
 
     }
@@ -105,6 +135,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public GetAccessToken getNewAccessToken(String token) throws IOException, ParseException {
+
 
         JSONParser jsonParser = new JSONParser();
         OkHttpClient client = new OkHttpClient();

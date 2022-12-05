@@ -8,11 +8,17 @@ import com.shivraj.demo.payload.school.getCoursesForSchool.GetCoursesForSchool;
 import com.shivraj.demo.payload.school.getDistrictForSchool.GetDistrictForSchool;
 import com.shivraj.demo.payload.school.getSchoolById.GetSchoolById;
 import com.shivraj.demo.payload.school.getSchoolByUser.GetSchoolByUser;
+import com.shivraj.demo.payload.tweek.getAllSchoolForDistrict.GetAllSchoolForDistrict;
+import com.shivraj.demo.payload.tweek.getAllSchoolForDistrict.response.Data;
+import com.shivraj.demo.payload.tweek.getAllSchoolForDistrict.response.FinalSchool;
+import com.shivraj.demo.payload.tweek.getAllSchoolForDistrict.response.NewSchool;
 import com.shivraj.demo.service.SchoolService;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,14 +30,28 @@ public class SchoolServiceImpl implements SchoolService {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
-    public AllSchool getAllSchool(String token) throws IOException {
+    public AllSchool getAllSchool(String token, Integer limit , String starting_after) throws IOException {
+
+        String start = "null";
+        String ApiUrl = null;
+
+        if(starting_after.equals(start)){
+            ApiUrl = "https://api.clever.com/v3.0/schools?limit="+limit;
+        }
+        else {
+            ApiUrl = "https://api.clever.com/v3.0/schools?limit="+limit+"&starting_after="+starting_after;
+        }
 
         System.out.println("Token :-"+token);
+
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("https://api.clever.com/v3.0/schools")
+                .url(ApiUrl)
                 .get()
                 .addHeader("accept", "application/json")
                 .addHeader("authorization", token)
@@ -110,6 +130,26 @@ public class SchoolServiceImpl implements SchoolService {
 
         return objectMapper.readValue(responseBody.string() , GetDistrictForSchool.class);
     }
+
+    @Override
+    public FinalSchool getAllSchoolForDistrict(AllSchool allSchool) {
+
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+        GetAllSchoolForDistrict getAllSchoolForDistrict  = modelMapper.map(allSchool , GetAllSchoolForDistrict.class);
+
+        Data data = new Data();
+        data.setDistrict_Id(getAllSchoolForDistrict.getData().get(0).getData().getDistrict());
+
+        NewSchool newSchool = new NewSchool();
+        newSchool.setSchool(getAllSchoolForDistrict.getData());
+
+        FinalSchool finalSchool = new FinalSchool();
+        finalSchool.setData(newSchool);
+        finalSchool.setMessage("All Schools for District fetched Successfully");
+        finalSchool.setStatus(1);
+        return finalSchool;
+    }
+
 
     @Override
     public GetSchoolById getSchoolById(String token, String id) throws IOException {

@@ -14,7 +14,9 @@ import com.shivraj.demo.payload.district.getDistrictById.GetDistrictById;
 import com.shivraj.demo.service.DistrictService;
 import com.squareup.okhttp.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
@@ -74,31 +76,36 @@ public class DistrictServiceImpl implements DistrictService {
 
 
         NewValidDistrictIdResponse newValidDistrictIdResponse = new NewValidDistrictIdResponse();
-        DataDTO dataDTO = new DataDTO();
-        DistrictDTO districtDTO = new DistrictDTO();
-        OwnerDTO ownerDTO = new OwnerDTO();
 
-        ownerDTO.setId(getToken.getData().get(0).getOwner().id());
-        ownerDTO.setType(getToken.getData().get(0).getOwner().getType());
+            DataDTO dataDTO = new DataDTO();
+            DistrictDTO districtDTO = new DistrictDTO();
+            OwnerDTO ownerDTO = new OwnerDTO();
 
-        districtDTO.setDistrictId(id);
-        districtDTO.setCreated(getToken.getData().get(0).getCreated());
-        districtDTO.setOwner(ownerDTO);
-        districtDTO.setAccessToken(getToken.getData().get(0).getAccessToken());
-        districtDTO.setId(getToken.getData().get(0).getId());
+            ownerDTO.setId(getToken.getData().get(0).getOwner().id());
+            ownerDTO.setType(getToken.getData().get(0).getOwner().getType());
 
-        dataDTO.setDistrict(districtDTO);
+            districtDTO.setDistrictId(id);
+            districtDTO.setCreated(getToken.getData().get(0).getCreated());
+            districtDTO.setOwner(ownerDTO);
+            districtDTO.setAccessToken(getToken.getData().get(0).getAccessToken());
+            districtDTO.setId(getToken.getData().get(0).getId());
 
-        if (id.equals(getToken.getData().get(0).getOwner().id())) {
-            newValidDistrictIdResponse.setMessage("District Id has been validated Successfully !!!");
-            newValidDistrictIdResponse.setStatus(1);
-            newValidDistrictIdResponse.setData(dataDTO);
-        }
-        else{
-            newValidDistrictIdResponse.setMessage("Please Provide Correct District ID");
-            newValidDistrictIdResponse.setStatus(0);
-            newValidDistrictIdResponse.setData(null);
-        }
+            dataDTO.setDistrict(districtDTO);
+
+
+                if (id.equals(getToken.getData().get(0).getOwner().id())) {
+                    newValidDistrictIdResponse.setMessage("District Id has been validated Successfully !!!");
+                    newValidDistrictIdResponse.setStatus(1);
+                    newValidDistrictIdResponse.setData(dataDTO);
+                }
+
+            else{
+                //    throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Incorrect District Id:-"+id);
+                    newValidDistrictIdResponse.setMessage("Please Provide Correct District ID");
+                    newValidDistrictIdResponse.setStatus(0);
+                    newValidDistrictIdResponse.setData(null);
+            }
+
         return newValidDistrictIdResponse;
     }
 }

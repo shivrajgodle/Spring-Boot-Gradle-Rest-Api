@@ -3,6 +3,8 @@ package com.shivraj.demo.payload.tweek;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.shivraj.demo.payload.tweek.getAllSchoolForDistrict.LocationDTO;
+import com.shivraj.demo.payload.tweek.getAllSchoolForDistrict.PrincipalDTO;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)

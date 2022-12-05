@@ -9,6 +9,7 @@ public class AppConstants {
 
     public static final String HEADER_STRING = "Authorization";
 
+    public static final String LIMIT = "2";
 
 
     public static final String INVALID_ACCESS_TOKEN = "Invalid access token";

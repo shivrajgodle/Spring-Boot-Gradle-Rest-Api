@@ -44,4 +44,13 @@ public class MeResponce {
     public void setLinks(ArrayList<Object> links) {
         this.links = links;
     }
+
+    @Override
+    public String toString() {
+        return "MeResponce{" +
+                "type='" + type + '\'' +
+                ", data=" + data +
+                ", links=" + links +
+                '}';
+    }
 }

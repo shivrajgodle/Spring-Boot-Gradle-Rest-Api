@@ -22,11 +22,11 @@ public class SchoolController {
     private SchoolService schoolService;
 
     @GetMapping("/getAllSchool")
-    public ResponseEntity<AllSchool> GetAllSchool(@RequestHeader(AppConstants.HEADER_STRING) String token) throws IOException {
+    public ResponseEntity<AllSchool> GetAllSchool(@RequestHeader(AppConstants.HEADER_STRING) String token , @RequestParam(value = "limit", defaultValue = "2") Integer limit,@RequestParam(value = "starting_after", defaultValue = "null") String starting_after) throws IOException {
 
         System.out.println("token :-"+token);
 
-        AllSchool allSchool = schoolService.getAllSchool(token);
+        AllSchool allSchool = schoolService.getAllSchool(token,limit,starting_after);
 
         return new ResponseEntity<AllSchool>(allSchool , HttpStatus.OK);
     }
