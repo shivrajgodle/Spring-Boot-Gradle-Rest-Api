@@ -11,6 +11,7 @@ import com.shivraj.demo.payload.auth.responce.OwnerDTO;
 import com.shivraj.demo.payload.courses.getAllCourses.AllCourses;
 import com.shivraj.demo.payload.district.getAllDistrict.GetAllDistrict;
 import com.shivraj.demo.payload.district.getDistrictById.GetDistrictById;
+import com.shivraj.demo.service.AuthService;
 import com.shivraj.demo.service.DistrictService;
 import com.squareup.okhttp.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,9 @@ public class DistrictServiceImpl implements DistrictService {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @Autowired
+    private AuthService authService;
 
     @Override
     public GetAllDistrict getAllDistrict(String token) throws IOException {

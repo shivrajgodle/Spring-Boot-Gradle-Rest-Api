@@ -11,7 +11,7 @@ public class AllSchool {
 
     private List<NewData> data;
 
-    private List<Links> links;
+
 
     public List<NewData> getData() {
         return data;
@@ -21,11 +21,5 @@ public class AllSchool {
         this.data = data;
     }
 
-    public List<Links> getLinks() {
-        return links;
-    }
 
-    public void setLinks(List<Links> links) {
-        this.links = links;
-    }
 }

@@ -10,18 +10,9 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GetContactUserForStudent {
 
-    @JsonProperty("links")
-    private List<LinksDTO> links;
+
     @JsonProperty("data")
     private List<DataDTO> data;
-
-    public List<LinksDTO> getLinks() {
-        return links;
-    }
-
-    public void setLinks(List<LinksDTO> links) {
-        this.links = links;
-    }
 
     public List<DataDTO> getData() {
         return data;

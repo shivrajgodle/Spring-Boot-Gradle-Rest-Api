@@ -2,32 +2,49 @@ package com.shivraj.demo.payload.Users.getSectionByUser;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.OffsetDateTime;
 import java.util.Date;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 
 public class Data {
 
+    @JsonProperty("course")
     private String course;
-    private Date created;
+    @JsonProperty("created")
+    private String created;
+    @JsonProperty("district")
     private String district;
+    @JsonProperty("grade")
     private String grade;
-    private Date last_modified;
+    @JsonProperty("last_modified")
+    private String lastModified;
+    @JsonProperty("name")
     private String name;
+    @JsonProperty("period")
     private String period;
+    @JsonProperty("school")
     private String school;
-    private String section_number;
-    private String sis_id;
-    private String[] students;
+    @JsonProperty("section_number")
+    private String sectionNumber;
+    @JsonProperty("sis_id")
+    private String sisId;
+    @JsonProperty("students")
+    private List<String> students;
+    @JsonProperty("subject")
     private String subject;
+    @JsonProperty("teacher")
     private String teacher;
-    private String[] teachers;
-    private String term_id;
+    @JsonProperty("teachers")
+    private List<String> teachers;
+    @JsonProperty("term_id")
+    private String termId;
+    @JsonProperty("id")
     private String id;
-
 
     public String getCourse() {
         return course;
@@ -37,11 +54,11 @@ public class Data {
         this.course = course;
     }
 
-    public Date getCreated() {
+    public String getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(String created) {
         this.created = created;
     }
 
@@ -61,12 +78,12 @@ public class Data {
         this.grade = grade;
     }
 
-    public Date getLast_modified() {
-        return last_modified;
+    public String getLastModified() {
+        return lastModified;
     }
 
-    public void setLast_modified(Date last_modified) {
-        this.last_modified = last_modified;
+    public void setLastModified(String lastModified) {
+        this.lastModified = lastModified;
     }
 
     public String getName() {
@@ -93,27 +110,27 @@ public class Data {
         this.school = school;
     }
 
-    public String getSection_number() {
-        return section_number;
+    public String getSectionNumber() {
+        return sectionNumber;
     }
 
-    public void setSection_number(String section_number) {
-        this.section_number = section_number;
+    public void setSectionNumber(String sectionNumber) {
+        this.sectionNumber = sectionNumber;
     }
 
-    public String getSis_id() {
-        return sis_id;
+    public String getSisId() {
+        return sisId;
     }
 
-    public void setSis_id(String sis_id) {
-        this.sis_id = sis_id;
+    public void setSisId(String sisId) {
+        this.sisId = sisId;
     }
 
-    public String[] getStudents() {
+    public List<String> getStudents() {
         return students;
     }
 
-    public void setStudents(String[] students) {
+    public void setStudents(List<String> students) {
         this.students = students;
     }
 
@@ -133,20 +150,20 @@ public class Data {
         this.teacher = teacher;
     }
 
-    public String[] getTeachers() {
+    public List<String> getTeachers() {
         return teachers;
     }
 
-    public void setTeachers(String[] teachers) {
+    public void setTeachers(List<String> teachers) {
         this.teachers = teachers;
     }
 
-    public String getTerm_id() {
-        return term_id;
+    public String getTermId() {
+        return termId;
     }
 
-    public void setTerm_id(String term_id) {
-        this.term_id = term_id;
+    public void setTermId(String termId) {
+        this.termId = termId;
     }
 
     public String getId() {

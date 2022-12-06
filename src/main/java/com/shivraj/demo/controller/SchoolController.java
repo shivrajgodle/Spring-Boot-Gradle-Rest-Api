@@ -6,6 +6,7 @@ import com.shivraj.demo.payload.school.getCoursesForSchool.GetCoursesForSchool;
 import com.shivraj.demo.payload.school.getDistrictForSchool.GetDistrictForSchool;
 import com.shivraj.demo.payload.school.getSchoolById.GetSchoolById;
 import com.shivraj.demo.payload.school.getSchoolByUser.GetSchoolByUser;
+import com.shivraj.demo.payload.school.getUsersBySchool.GetUsersBySchool;
 import com.shivraj.demo.service.SchoolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/Clever")
+@RequestMapping("/clever")
 public class SchoolController {
 
     @Autowired
@@ -23,8 +24,6 @@ public class SchoolController {
 
     @GetMapping("/getAllSchool")
     public ResponseEntity<AllSchool> GetAllSchool(@RequestHeader(AppConstants.HEADER_STRING) String token , @RequestParam(value = "limit", defaultValue = "2") Integer limit,@RequestParam(value = "starting_after", defaultValue = "null") String starting_after) throws IOException {
-
-        System.out.println("token :-"+token);
 
         AllSchool allSchool = schoolService.getAllSchool(token,limit,starting_after);
 
@@ -41,10 +40,14 @@ public class SchoolController {
 
 
     @GetMapping("/schools/{id}/users")
-    public ResponseEntity<GetSchoolByUser> getSchoolById(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id) throws IOException {
+    public ResponseEntity<GetUsersBySchool> getUsersBySchoolId(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id ,
+                                                               @RequestParam(value = "role", defaultValue = "student") String role,
+                                                               @RequestParam(value = "primary", defaultValue = "null") String primary,
+                                                               @RequestParam(value = "limit", defaultValue = AppConstants.LIMIT) Integer limit,
+                                                               @RequestParam(value = "starting_after", defaultValue = "null") String starting_after) throws IOException {
 
-        GetSchoolByUser getSchoolByUser = schoolService.getSchoolByUser(token,id);
-        return new ResponseEntity<GetSchoolByUser>(getSchoolByUser,HttpStatus.OK);
+        GetUsersBySchool getSchoolByUser = schoolService.getUserBySchoolId(token,id,role,primary,limit,starting_after);
+        return new ResponseEntity<GetUsersBySchool>(getSchoolByUser,HttpStatus.OK);
     }
 
     @GetMapping("/schools/{id}/courses")

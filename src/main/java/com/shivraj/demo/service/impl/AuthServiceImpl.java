@@ -108,8 +108,6 @@ public class AuthServiceImpl implements AuthService {
 
     public MeResponce GetMeInfo(String token) throws IOException {
 
-
-
         String url = "https://api.clever.com/v3.0/me";
 
         OkHttpClient client = new OkHttpClient();
@@ -124,11 +122,8 @@ public class AuthServiceImpl implements AuthService {
         Response response = client.newCall(request).execute();
 
         if(!response.isSuccessful()) throw new ResourceNotFoundException("userInfo","Token",AppConstants.INVALID_ACCESS_TOKEN);
-
         ResponseBody responseBody = client.newCall(request).execute().body();
         MeResponce meResponce = objectMapper.readValue(responseBody.string() , MeResponce.class);
-
-        System.out.println("token values are"+meResponce);
 
         return meResponce;
     }

@@ -9,6 +9,7 @@ import com.shivraj.demo.payload.Users.getSchoolForUser.GetSchoolForUser;
 import com.shivraj.demo.payload.Users.getSectionByUser.UserWiseSection;
 import com.shivraj.demo.payload.Users.getStudentForTeacher.GetStudentsForTeacher;
 import com.shivraj.demo.payload.Users.getTeacherForStudent.GetTeacherForStudent;
+import com.shivraj.demo.response.ResponseHandler;
 import com.shivraj.demo.service.NewUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,57 +19,73 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/Clever")
+@RequestMapping("/clever")
 public class NewUserController {
 
     @Autowired
     private NewUserService newUserService;
 
+    //Returns the sections for a user
     @GetMapping("/users/{id}/sections")
-    public ResponseEntity<UserWiseSection>  getSectionByUser(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id) throws IOException {
+    public ResponseEntity<Object>  getSectionByUser(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id,
+                                                             @RequestParam(value = "limit", defaultValue = AppConstants.LIMIT) Integer limit,
+                                                             @RequestParam(value = "starting_after", defaultValue = "null") String starting_after) throws IOException {
 
-        System.out.println("User token:-"+token);
-        System.out.println("Id:-"+id);
+        UserWiseSection userWiseSection = newUserService.GetSectionByUser(token,id,limit,starting_after);
 
-        UserWiseSection userWiseSection = newUserService.GetSectionByUser(token,id);
-
-
-        return new ResponseEntity<UserWiseSection>(userWiseSection, HttpStatus.OK) ;
-    }
-
-    @GetMapping("/allusers")
-    public ResponseEntity<AllUserData> getSectionByUser(@RequestHeader(AppConstants.HEADER_STRING) String token) throws IOException {
-
-        System.out.println("harsh"+token);
-
-        AllUserData allUsers = newUserService.getAllUsers(token);
-
-
-        return new ResponseEntity<AllUserData>(allUsers, HttpStatus.OK) ;
-    }
-
-    @GetMapping("/allusersWithFilter")
-    public ResponseEntity<AllUserData>  getSectionByUserWithPagination(@RequestHeader(AppConstants.HEADER_STRING) String token, @RequestParam(value = "limit", defaultValue = "5") Integer limit) throws IOException {
-
-        AllUserData allUsers = newUserService.getSectionByUserWithPagination(token,limit);
-
-
-        return new ResponseEntity<AllUserData>(allUsers, HttpStatus.OK) ;
+        if(userWiseSection.getData().size() == 0){
+            return ResponseHandler.responseBuilder(userWiseSection , "Section Not found for the User !!!" , 0);
+        }else {
+            return ResponseHandler.responseBuilder(userWiseSection ,"Sections For User Fetched Successfully !!!",1);
+        }
     }
 
 
+    //Returns a list of contact, district admin, staff, student, and/or teacher users
+    @GetMapping("/allUsers")
+    public ResponseEntity<Object> getAllUsers(@RequestHeader(AppConstants.HEADER_STRING) String token,
+                                                   @RequestParam(value = "limit", defaultValue = "2") Integer limit ,
+                                                   @RequestParam(value = "role", defaultValue = "null") String role,
+                                                   @RequestParam(value = "starting_after", defaultValue = "null") String starting_after) throws IOException {
+
+        AllUserData allUsers = newUserService.getAllUsers(token,limit,role,starting_after);
+
+        if(allUsers.getData().size() == 0){
+            return ResponseHandler.responseBuilder(allUsers , "Users Not Available" , 0);
+        }
+        else {
+            return ResponseHandler.responseBuilder(allUsers,"Users fetched Successfully !!!",1);
+        }
+
+    }
+
+
+    //Returns the district for a user
     @GetMapping("users/{id}/district")
-    public ResponseEntity<GetDistrictForUser> getDistrictForUser(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id) throws IOException {
+    public ResponseEntity<Object> getDistrictForUser(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id) throws IOException {
         GetDistrictForUser getDistrictForUser = newUserService.getDistrictForUser(token,id);
 
-        return new ResponseEntity<GetDistrictForUser>(getDistrictForUser,HttpStatus.OK);
+        if(getDistrictForUser.getData().getName().isEmpty()){
+            return ResponseHandler.responseBuilder(getDistrictForUser , "District Info Not Found", 0);
+        }else {
+            return ResponseHandler.responseBuilder(getDistrictForUser,"District Info fetched Successfully !!!",1);
+        }
 
     }
 
-    @GetMapping("users/{id}/mycontacts")
-    public ResponseEntity<GetContactUserForStudent> getContactUserForStudent(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id) throws IOException {
-        GetContactUserForStudent getContactUserForStudent = newUserService.getContactUserForStudent(token,id);
-        return new ResponseEntity<GetContactUserForStudent>(getContactUserForStudent,HttpStatus.OK);
+
+    //Returns the contact users for a student user
+    @GetMapping("users/{id}/myContacts")
+    public ResponseEntity<Object> getContactUserForStudent(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id,
+                                                                             @RequestParam(value = "limit", defaultValue = AppConstants.LIMIT) Integer limit,
+                                                                             @RequestParam(value = "starting_after", defaultValue = "null") String starting_after) throws IOException {
+        GetContactUserForStudent getContactUserForStudent = newUserService.getContactUserForStudent(token,id,limit,starting_after);
+
+        if(getContactUserForStudent.getData().size() == 0){
+            return ResponseHandler.responseBuilder(getContactUserForStudent , "My Contacts Info Not Found !!!",0);
+        }else {
+            return ResponseHandler.responseBuilder(getContactUserForStudent,"MyContacts Info Fetched Successfully",1);
+        }
     }
 
     @GetMapping("users/{id}/mystudents")

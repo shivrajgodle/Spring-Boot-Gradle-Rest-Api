@@ -1,9 +1,7 @@
-package com.shivraj.demo.payload.terms.getAllTerms;
+package com.shivraj.demo.payload.terms;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
-import java.util.Date;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)

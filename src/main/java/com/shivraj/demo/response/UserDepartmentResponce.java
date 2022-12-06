@@ -1,4 +1,4 @@
-package com.shivraj.demo.responce;
+package com.shivraj.demo.response;
 
 public class UserDepartmentResponce {
     private String name;

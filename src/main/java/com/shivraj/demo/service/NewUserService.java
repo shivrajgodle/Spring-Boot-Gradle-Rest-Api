@@ -13,18 +13,13 @@ import java.io.IOException;
 
 public interface NewUserService {
 
-    public UserWiseSection GetSectionByUser(String token , String Userid) throws IOException;
+    public UserWiseSection GetSectionByUser(String token , String Userid , Integer limit , String Starting_after) throws IOException;
 
-    public AllUserData getAllUsers(String token) throws IOException;
-//
-//    public AllUserData getSectionByUserWithPagination(String token, Integer limit, String role, String starting_after, String ending_before, String count) throws IOException;
-
-
-    public AllUserData getSectionByUserWithPagination(String token, Integer limit) throws IOException;
+    public AllUserData getAllUsers(String token, Integer limit ,String role, String starting_after) throws IOException;
 
     public GetDistrictForUser getDistrictForUser(String token,String Userid) throws IOException;
 
-    public GetContactUserForStudent getContactUserForStudent(String token, String Userid) throws IOException;
+    public GetContactUserForStudent getContactUserForStudent(String token, String Userid , Integer limit , String starting_after) throws IOException;
 
     public GetStudentsForTeacher getStudentsForTeacher(String token, String Userid) throws IOException;
 

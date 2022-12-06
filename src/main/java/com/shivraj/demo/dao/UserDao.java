@@ -1,6 +1,6 @@
 package com.shivraj.demo.dao;
 
-import com.shivraj.demo.responce.UserDepartmentResponce;
+import com.shivraj.demo.response.UserDepartmentResponce;
 
 import java.util.List;
 

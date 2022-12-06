@@ -1,4 +1,4 @@
-package com.shivraj.demo.payload.tweek.getAllSchoolForDistrict;
+package com.shivraj.demo.payload.school.getUsersBySchool;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -6,22 +6,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GetAllSchoolForDistrict {
+public class GetUsersBySchool {
 
 
-    private List<NewData> data;
+    @JsonProperty("data")
+    private List<NewDataDTO> data;
 
 
-
-    public List<NewData> getData() {
+    public List<NewDataDTO> getData() {
         return data;
     }
 
-    public void setData(List<NewData> data) {
+    public void setData(List<NewDataDTO> data) {
         this.data = data;
     }
-
 }

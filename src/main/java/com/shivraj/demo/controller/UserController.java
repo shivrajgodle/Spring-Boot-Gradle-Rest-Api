@@ -1,7 +1,7 @@
 package com.shivraj.demo.controller;
 
 import com.shivraj.demo.entity.User;
-import com.shivraj.demo.responce.UserDepartmentResponce;
+import com.shivraj.demo.response.UserDepartmentResponce;
 import com.shivraj.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

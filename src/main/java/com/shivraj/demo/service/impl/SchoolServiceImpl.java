@@ -1,5 +1,7 @@
 package com.shivraj.demo.service.impl;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shivraj.demo.config.AppConstants;
 import com.shivraj.demo.exception.ResourceNotFoundException;
@@ -8,19 +10,19 @@ import com.shivraj.demo.payload.school.getCoursesForSchool.GetCoursesForSchool;
 import com.shivraj.demo.payload.school.getDistrictForSchool.GetDistrictForSchool;
 import com.shivraj.demo.payload.school.getSchoolById.GetSchoolById;
 import com.shivraj.demo.payload.school.getSchoolByUser.GetSchoolByUser;
-import com.shivraj.demo.payload.tweek.getAllSchoolForDistrict.GetAllSchoolForDistrict;
-import com.shivraj.demo.payload.tweek.getAllSchoolForDistrict.response.Data;
-import com.shivraj.demo.payload.tweek.getAllSchoolForDistrict.response.FinalSchool;
-import com.shivraj.demo.payload.tweek.getAllSchoolForDistrict.response.NewSchool;
+import com.shivraj.demo.payload.school.getSectionForSchool.GetSectionForSchool;
+import com.shivraj.demo.payload.school.getUsersBySchool.GetUsersBySchool;
+import com.shivraj.demo.service.AuthService;
 import com.shivraj.demo.service.SchoolService;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
@@ -33,8 +35,13 @@ public class SchoolServiceImpl implements SchoolService {
     @Autowired
     private ModelMapper modelMapper;
 
+    @Autowired
+    private AuthService authService;
+
     @Override
     public AllSchool getAllSchool(String token, Integer limit , String starting_after) throws IOException {
+
+        authService.isValidAccessToken(token);
 
         String start = "null";
         String ApiUrl = null;
@@ -45,8 +52,6 @@ public class SchoolServiceImpl implements SchoolService {
         else {
             ApiUrl = "https://api.clever.com/v3.0/schools?limit="+limit+"&starting_after="+starting_after;
         }
-
-        System.out.println("Token :-"+token);
 
         OkHttpClient client = new OkHttpClient();
 
@@ -64,16 +69,36 @@ public class SchoolServiceImpl implements SchoolService {
         ResponseBody responseBody = client.newCall(request).execute().body();
 
         AllSchool allSchool =  objectMapper.readValue(responseBody.string() , AllSchool.class);
+
         return allSchool;
     }
 
     @Override
-    public GetSchoolByUser getSchoolByUser(String token, String id) throws IOException {
+    public GetUsersBySchool getUserBySchoolId(String token, String id , String role, String primary, Integer limit, String starting_after) throws IOException {
+
+        authService.isValidAccessToken(token);
+
+        String start = "null";
+        String prime = "null";
+        String ApiUrl = null;
+
+        if(starting_after.equals(start) && primary.equals(prime)){
+            ApiUrl = "https://api.clever.com/v3.0/schools/"+id+"/users?role="+role+"&limit="+limit;
+        }
+        else if(primary.equals(prime)){
+            ApiUrl = "https://api.clever.com/v3.0/schools/"+id+"/users?role="+role+"&limit="+limit+"&starting_after="+starting_after+"";
+        }
+        else if(starting_after.equals(start)){
+            ApiUrl = "https://api.clever.com/v3.0/schools/"+id+"/users?role="+role+"&primary="+primary+"&limit="+limit+"";
+        }
+        else {
+            ApiUrl = "https://api.clever.com/v3.0/schools/"+id+"/users?role="+role+"&primary="+primary+"&limit="+limit+"&starting_after="+starting_after+"";
+        }
 
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("https://api.clever.com/v3.0/schools/"+id+"/users")
+                .url(ApiUrl)
                 .get()
                 .addHeader("accept", "application/json")
                 .addHeader("authorization", token)
@@ -81,11 +106,11 @@ public class SchoolServiceImpl implements SchoolService {
 
         Response response = client.newCall(request).execute();
 
-        if(!response.isSuccessful()) throw new ResourceNotFoundException("School Info","ID", id);
+        if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "School id not found:-"+id);
 
         ResponseBody responseBody = client.newCall(request).execute().body();
 
-        return objectMapper.readValue(responseBody.string() , GetSchoolByUser.class);
+        return objectMapper.readValue(responseBody.string() , GetUsersBySchool.class);
 
     }
 
@@ -93,7 +118,6 @@ public class SchoolServiceImpl implements SchoolService {
     public GetCoursesForSchool getCoursesForSchool(String token, String id) throws IOException {
 
         OkHttpClient client = new OkHttpClient();
-
         Request request = new Request.Builder()
                 .url("https://api.clever.com/v3.0/schools/"+id+"/courses")
                 .get()
@@ -132,23 +156,53 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    public FinalSchool getAllSchoolForDistrict(AllSchool allSchool) {
+    public GetSectionForSchool getSectionForSchool(String token, String id, Integer limit, String starting_after) throws IOException {
 
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
-        GetAllSchoolForDistrict getAllSchoolForDistrict  = modelMapper.map(allSchool , GetAllSchoolForDistrict.class);
+        authService.isValidAccessToken(token);
 
-        Data data = new Data();
-        data.setDistrict_Id(getAllSchoolForDistrict.getData().get(0).getData().getDistrict());
+        String start = "null";
+        String ApiUrl = null;
 
-        NewSchool newSchool = new NewSchool();
-        newSchool.setSchool(getAllSchoolForDistrict.getData());
+        if(starting_after.equals(start)){
+            ApiUrl = "https://api.clever.com/v3.0/schools/"+id+"/sections?limit="+limit;
+        }
+        else {
+            ApiUrl = "https://api.clever.com/v3.0/schools/"+id+"/sections?limit="+limit+"&starting_after="+starting_after;
+        }
+        OkHttpClient client = new OkHttpClient();
 
-        FinalSchool finalSchool = new FinalSchool();
-        finalSchool.setData(newSchool);
-        finalSchool.setMessage("All Schools for District fetched Successfully");
-        finalSchool.setStatus(1);
-        return finalSchool;
+        Request request = new Request.Builder()
+                .url(ApiUrl)
+                .get()
+                .addHeader("accept", "application/json")
+                .addHeader("authorization", token)
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "School id not found:-"+id);
+        ResponseBody responseBody = client.newCall(request).execute().body();
+        return objectMapper.readValue(responseBody.string() , GetSectionForSchool.class);
     }
+//
+//    @Override
+//    public FinalSchool getAllSchoolForDistrict(AllSchool allSchool) {
+//
+//        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+//        GetAllSchoolForDistrict getAllSchoolForDistrict  = modelMapper.map(allSchool , GetAllSchoolForDistrict.class);
+//
+//        Data data = new Data();
+//        data.setDistrict_Id(getAllSchoolForDistrict.getData().get(0).getData().getDistrict());
+//
+//        NewSchool newSchool = new NewSchool();
+//        newSchool.setSchool(getAllSchoolForDistrict.getData());
+//
+//        FinalSchool finalSchool = new FinalSchool();
+//        finalSchool.setData(newSchool);
+//        finalSchool.setMessage("All Schools for District fetched Successfully");
+//        finalSchool.setStatus(1);
+//        return finalSchool;
+//    }
 
 
     @Override

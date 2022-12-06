@@ -11,13 +11,16 @@ import com.shivraj.demo.payload.Users.getSchoolForUser.GetSchoolForUser;
 import com.shivraj.demo.payload.Users.getSectionByUser.UserWiseSection;
 import com.shivraj.demo.payload.Users.getStudentForTeacher.GetStudentsForTeacher;
 import com.shivraj.demo.payload.Users.getTeacherForStudent.GetTeacherForStudent;
+import com.shivraj.demo.service.AuthService;
 import com.shivraj.demo.service.NewUserService;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.squareup.okhttp.ResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 
@@ -28,108 +31,79 @@ public class NewUserServiceImpl implements NewUserService {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    private AuthService authService;
+
     @Override
-    public UserWiseSection GetSectionByUser(String token, String Userid) throws IOException {
+    public UserWiseSection GetSectionByUser(String token, String Userid , Integer limit , String starting_after) throws IOException {
+
+        authService.isValidAccessToken(token);
+
+        String start = "null";
+        String ApiUrl = null;
+
+        if(starting_after.equals(start)){
+            ApiUrl = "https://api.clever.com/v3.0/users/"+Userid+"/sections?limit="+limit;
+        }
+        else {
+            ApiUrl = "https://api.clever.com/v3.0/users/"+Userid+"/sections?limit="+limit+"&starting_after="+starting_after;
+        }
 
         OkHttpClient client = new OkHttpClient();
-
         Request request = new Request.Builder()
-                .url("https://api.clever.com/v3.0/users/"+Userid+"/sections")
+                .url(ApiUrl)
                 .get()
                 .addHeader("accept", "application/json")
                 .addHeader("authorization", token)
                 .build();
 
         Response response = client.newCall(request).execute();
-
-        if(!response.isSuccessful()) throw new ResourceNotFoundException("Section","Userid",Userid);
-
-        ResponseBody responseBody = client.newCall(request).execute().body();
-
-       UserWiseSection  userWiseSection =  objectMapper.readValue(responseBody.string() , UserWiseSection.class);
-
-        return userWiseSection;
-    }
-
-    @Override
-    public AllUserData getAllUsers(String token) throws IOException {
-
-        System.out.println("Token :-"+token);
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder()
-                .url("https://api.clever.com/v3.0/users")
-                .get()
-                .addHeader("accept", "application/json")
-                .addHeader("authorization", token)
-                .build();
-
-        Response response = client.newCall(request).execute();
-
-        if(!response.isSuccessful()) throw new ResourceNotFoundException("All user Info","Token", AppConstants.INVALID_ACCESS_TOKEN);
+        if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Section not found for id"+Userid);
 
         ResponseBody responseBody = client.newCall(request).execute().body();
-
-        AllUserData  allUsers =  objectMapper.readValue(responseBody.string() , AllUserData.class);
-
-
-        return allUsers;
+        return objectMapper.readValue(responseBody.string() , UserWiseSection.class);
     }
 
-//    @Override
-//    public AllUserData getSectionByUserWithPagination(String token, Integer limit, String role, String starting_after, String ending_before, String count) throws IOException {
-//
-//        OkHttpClient client = new OkHttpClient();
-//
-//        Request request = new Request.Builder()
-//                .url("https://api.clever.com/v3.0/users?limit="+limit+"&role="+role+"&starting_after="+starting_after+"&ending_before="+ending_before+"&count="+count+"")
-//                .get()
-//                .addHeader("accept", "application/json")
-//                .addHeader("authorization", token)
-//                .build();
-//
-//      //  Response response = client.newCall(request).execute();
-//
-//      //  if(!response.isSuccessful()) throw new ResourceNotFoundException("All user Info","Token", AppConstants.INVALID_ACCESS_TOKEN);
-//
-//        ResponseBody responseBody = client.newCall(request).execute().body();
-//
-//        AllUserData  allUsers =  objectMapper.readValue(responseBody.string() , AllUserData.class);
-//
-//        return allUsers;
-//    }
 
     @Override
-    public AllUserData getSectionByUserWithPagination(String token, Integer limit) throws IOException {
+    public AllUserData getAllUsers(String token, Integer limit , String role, String starting_after) throws IOException {
+
+        authService.isValidAccessToken(token);
+
+        String start = "null";
+        String roles = "null";
+        String ApiUrl = null;
+
+        if(starting_after.equals(start) && role.equals(roles)){
+            ApiUrl = "https://api.clever.com/v3.0/users?limit="+limit;
+        }
+        else if(starting_after.equals(start)){
+            ApiUrl = "https://api.clever.com/v3.0/users?limit="+limit+"&role="+role+"";
+        }
+        else {
+            ApiUrl = "https://api.clever.com/v3.0/users?limit="+limit+"&role="+role+"&starting_after="+starting_after+"";
+        }
 
         OkHttpClient client = new OkHttpClient();
-
-        String NewLimit = "?limit="+limit;
-
-        String NewUrl = "https://api.clever.com/v3.0/users"+NewLimit;
-
-        System.out.println("new url :-"+NewUrl);
-
         Request request = new Request.Builder()
-                .url(NewUrl)
+                .url(ApiUrl)
                 .get()
                 .addHeader("accept", "application/json")
                 .addHeader("authorization", token)
                 .build();
 
           Response response = client.newCall(request).execute();
-
-          if(!response.isSuccessful()) throw new ResourceNotFoundException("All user Info","Token", AppConstants.INVALID_ACCESS_TOKEN);
-
+          if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND ,"Userinfo Not found");
         ResponseBody responseBody = client.newCall(request).execute().body();
 
-        AllUserData  allUsers =  objectMapper.readValue(responseBody.string() , AllUserData.class);
+        return  objectMapper.readValue(responseBody.string() , AllUserData.class);
 
-        return allUsers;
     }
 
     @Override
     public GetDistrictForUser getDistrictForUser(String token, String Userid) throws IOException {
+
+        authService.isValidAccessToken(token);
 
         OkHttpClient client = new OkHttpClient();
 
@@ -142,7 +116,7 @@ public class NewUserServiceImpl implements NewUserService {
 
         Response response = client.newCall(request).execute();
 
-        if(!response.isSuccessful()) throw new ResourceNotFoundException("District Info","UserId", Userid);
+        if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND , "Incorrect UserId :-"+ Userid);
 
         ResponseBody responseBody = client.newCall(request).execute().body();
 
@@ -151,12 +125,27 @@ public class NewUserServiceImpl implements NewUserService {
         return getDistrictForUser;
     }
 
+
     @Override
-    public GetContactUserForStudent getContactUserForStudent(String token, String Userid) throws IOException {
+    public GetContactUserForStudent getContactUserForStudent(String token, String Userid , Integer limit , String starting_after) throws IOException {
+
+        authService.isValidAccessToken(token);
+
+        String start = "null";
+        String ApiUrl = null;
+
+
+        if(starting_after.equals(start)){
+            ApiUrl = "https://api.clever.com/v3.0/users/"+Userid+"/mycontacts?limit="+limit;
+        }
+        else {
+            ApiUrl = "https://api.clever.com/v3.0/users/"+Userid+"/mycontacts?limit="+limit+"&starting_after="+starting_after;
+        }
+
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("https://api.clever.com/v3.0/users/"+Userid+"/mycontacts")
+                .url(ApiUrl)
                 .get()
                 .addHeader("accept", "application/json")
                 .addHeader("authorization", token)
@@ -164,13 +153,12 @@ public class NewUserServiceImpl implements NewUserService {
 
         Response response = client.newCall(request).execute();
 
-        if(!response.isSuccessful()) throw new ResourceNotFoundException("Contact User Info","UserId", Userid);
+        if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Contact info Not Found for UserId:-"+Userid);
 
         ResponseBody responseBody = client.newCall(request).execute().body();
 
-        GetContactUserForStudent getContactUserForStudent =  objectMapper.readValue(responseBody.string() , GetContactUserForStudent.class);
+        return objectMapper.readValue(responseBody.string() , GetContactUserForStudent.class);
 
-        return getContactUserForStudent;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.shivraj.demo.controller;
 
 import com.shivraj.demo.config.AppConstants;
-import com.shivraj.demo.payload.terms.getAllTerms.AllTerms;
+import com.shivraj.demo.payload.terms.AllTerms;
 import com.shivraj.demo.service.TermsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

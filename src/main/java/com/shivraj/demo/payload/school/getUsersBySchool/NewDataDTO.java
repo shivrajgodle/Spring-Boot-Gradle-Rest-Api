@@ -1,18 +1,24 @@
-package com.shivraj.demo.payload.tweek.getAllSchoolForDistrict.response;
+package com.shivraj.demo.payload.school.getUsersBySchool;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.shivraj.demo.payload.tweek.getAllSchoolForDistrict.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class NewData {
-    private Data data;
+public class NewDataDTO {
 
-    public Data getData() {
+    @JsonProperty("data")
+    private DataDTO data;
+
+
+    public DataDTO getData() {
         return data;
     }
 
-    public void setData(Data data) {
+    public void setData(DataDTO data) {
         this.data = data;
     }
+
+
 }

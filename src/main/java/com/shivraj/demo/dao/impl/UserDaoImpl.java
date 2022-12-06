@@ -2,10 +2,9 @@ package com.shivraj.demo.dao.impl;
 
 import com.shivraj.demo.dao.UserDao;
 import com.shivraj.demo.dao.support.NamedParameterJdbcDaoSupportClass;
-import com.shivraj.demo.responce.UserDepartmentResponce;
+import com.shivraj.demo.response.UserDepartmentResponce;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

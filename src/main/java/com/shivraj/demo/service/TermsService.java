@@ -1,6 +1,7 @@
 package com.shivraj.demo.service;
 
-import com.shivraj.demo.payload.terms.getAllTerms.AllTerms;
+
+import com.shivraj.demo.payload.terms.AllTerms;
 
 import java.io.IOException;
 
