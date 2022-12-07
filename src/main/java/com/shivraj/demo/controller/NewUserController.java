@@ -88,24 +88,53 @@ public class NewUserController {
         }
     }
 
+
+    //Returns the student users for a teacher or contact user
     @GetMapping("users/{id}/mystudents")
-    public ResponseEntity<GetStudentsForTeacher> getStudentsForTeacher(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id) throws IOException {
-        GetStudentsForTeacher getStudentsForTeacher = newUserService.getStudentsForTeacher(token,id);
-        return new ResponseEntity<GetStudentsForTeacher>(getStudentsForTeacher,HttpStatus.OK);
+    public ResponseEntity<Object> getStudentsForTeacher(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id ,
+                                                                       @RequestParam(value = "limit", defaultValue = AppConstants.LIMIT) Integer limit,
+                                                                       @RequestParam(value = "starting_after", defaultValue = "null") String starting_after) throws IOException {
+        GetStudentsForTeacher getStudentsForTeacher = newUserService.getStudentsForTeacher(token,id,limit,starting_after);
+
+        if(getStudentsForTeacher.getData().size() == 0){
+            return ResponseHandler.responseBuilder(getStudentsForTeacher,"Student Info Not found for Teacher or Contact ID",0);
+        }else {
+            return ResponseHandler.responseBuilder(getStudentsForTeacher,"Student Info Successfully fetched for Teacher or Contact ID",1);
+        }
     }
 
+
+    //Returns the teacher users for a student user
     @GetMapping("users/{id}/myteachers")
-    public ResponseEntity<GetTeacherForStudent> getTeacherForStudent(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id) throws IOException {
+    public ResponseEntity<Object> getTeacherForStudent(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id,
+                                                                     @RequestParam(value = "limit", defaultValue = AppConstants.LIMIT) Integer limit,
+                                                                     @RequestParam(value = "starting_after", defaultValue = "null") String starting_after) throws IOException {
 
-        GetTeacherForStudent getTeacherForStudent = newUserService.getTeacherForStudent(token,id);
-        return new ResponseEntity<GetTeacherForStudent>(getTeacherForStudent,HttpStatus.OK);
+        GetTeacherForStudent getTeacherForStudent = newUserService.getTeacherForStudent(token,id,limit,starting_after);
+
+        if(getTeacherForStudent.getData().size() == 0){
+            return ResponseHandler.responseBuilder(getTeacherForStudent , "Teacher Info Not found for Student UserId",0);
+        }
+        else {
+            return ResponseHandler.responseBuilder(getTeacherForStudent , "Teacher Info for Student Fetched Successfully !!!",1);
+        }
     }
 
+    //Returns the schools for a user
     @GetMapping("users/{id}/schools")
-    public ResponseEntity<GetSchoolForUser> getSchoolForUser(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id) throws IOException {
+    public ResponseEntity<Object> getSchoolForUser(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id,
+                                                             @RequestParam(value = "primary", defaultValue = "null") String primary,
+                                                             @RequestParam(value = "limit", defaultValue = AppConstants.LIMIT) Integer limit,
+                                                             @RequestParam(value = "starting_after", defaultValue = "null") String starting_after) throws IOException {
 
-        GetSchoolForUser getSchoolForUser = newUserService.getSchoolForUser(token,id);
-        return new ResponseEntity<GetSchoolForUser>(getSchoolForUser,HttpStatus.OK);
+        GetSchoolForUser getSchoolForUser = newUserService.getSchoolForUser(token,id,primary,limit,starting_after);
+
+        if(getSchoolForUser.getData().size() == 0){
+            return ResponseHandler.responseBuilder(getSchoolForUser , "School Info Not found for UserId:-"+id,0);
+        }else {
+            return ResponseHandler.responseBuilder(getSchoolForUser , "School Info for User Fetched Successfully",1);
+        }
+
     }
 
 }

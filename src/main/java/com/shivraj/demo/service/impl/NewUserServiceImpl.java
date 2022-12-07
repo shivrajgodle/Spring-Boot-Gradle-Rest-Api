@@ -162,12 +162,24 @@ public class NewUserServiceImpl implements NewUserService {
     }
 
     @Override
-    public GetStudentsForTeacher getStudentsForTeacher(String token, String Userid) throws IOException {
+    public GetStudentsForTeacher getStudentsForTeacher(String token, String Userid,Integer limit,String starting_after) throws IOException {
+
+        authService.isValidAccessToken(token);
+
+        String start = "null";
+        String ApiUrl = null;
+
+        if(starting_after.equals(start)){
+            ApiUrl = "https://api.clever.com/v3.0/users/"+Userid+"/mystudents?limit="+limit;
+        }
+        else {
+            ApiUrl = "https://api.clever.com/v3.0/users/"+Userid+"/mystudents?limit="+limit+"&starting_after="+starting_after;
+        }
 
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("https://api.clever.com/v3.0/users/"+Userid+"/mystudents")
+                .url(ApiUrl)
                 .get()
                 .addHeader("accept", "application/json")
                 .addHeader("authorization", token)
@@ -175,56 +187,78 @@ public class NewUserServiceImpl implements NewUserService {
 
         Response response = client.newCall(request).execute();
 
-        if(!response.isSuccessful()) throw new ResourceNotFoundException("Student Info","UserId", Userid);
-
+        if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Student Info Not found for Teacher or Contact ID:-"+Userid);
         ResponseBody responseBody = client.newCall(request).execute().body();
-
-        GetStudentsForTeacher getStudentsForTeacher =  objectMapper.readValue(responseBody.string() , GetStudentsForTeacher.class);
-
-        return getStudentsForTeacher;
+        return  objectMapper.readValue(responseBody.string() , GetStudentsForTeacher.class);
     }
 
     @Override
-    public GetTeacherForStudent getTeacherForStudent(String token, String Userid) throws IOException {
+    public GetTeacherForStudent getTeacherForStudent(String token, String Userid ,Integer limit,String starting_after) throws IOException {
+
+
+        authService.isValidAccessToken(token);
+
+        String start = "null";
+        String ApiUrl = null;
+
+        if(starting_after.equals(start)){
+            ApiUrl = "https://api.clever.com/v3.0/users/"+Userid+"/myteachers?limit="+limit;
+        }
+        else {
+            ApiUrl = "https://api.clever.com/v3.0/users/"+Userid+"/myteachers?limit="+limit+"&starting_after="+starting_after;
+        }
 
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("https://api.clever.com/v3.0/users/"+Userid+"/myteachers")
+                .url(ApiUrl)
                 .get()
                 .addHeader("accept", "application/json")
                 .addHeader("authorization", token)
                 .build();
 
         Response response = client.newCall(request).execute();
-        if(!response.isSuccessful()) throw new ResourceNotFoundException("Teacher Info","UserId", Userid);
-
+        if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND ,"Teacher Info Not found for Student UserId :-"+ Userid);
         ResponseBody responseBody = client.newCall(request).execute().body();
-
-        GetTeacherForStudent getTeacherForStudent =  objectMapper.readValue(responseBody.string() , GetTeacherForStudent.class);
-
-        return getTeacherForStudent;
+        return objectMapper.readValue(responseBody.string() , GetTeacherForStudent.class);
     }
 
     @Override
-    public GetSchoolForUser getSchoolForUser(String token, String Userid) throws IOException {
+    public GetSchoolForUser getSchoolForUser(String token, String Userid , String primary,Integer limit,String starting_after) throws IOException {
+
+
+        authService.isValidAccessToken(token);
+
+        String start = "null";
+        String prime = "null";
+        String ApiUrl = null;
+
+        if(starting_after.equals(start) && primary.equals(prime)){
+            ApiUrl = "https://api.clever.com/v3.0/users/"+Userid+"/schools?limit="+limit;
+        }
+        else if(primary.equals(prime)){
+            ApiUrl = "https://api.clever.com/v3.0/users/"+Userid+"/schools?limit="+limit+"&starting_after="+starting_after+"";
+        }
+        else if(starting_after.equals(start)){
+            ApiUrl = "https://api.clever.com/v3.0/users/"+Userid+"/schools?primary="+primary+"&limit="+limit+"";
+        }
+        else {
+            ApiUrl = "https://api.clever.com/v3.0/users/"+Userid+"/schools?primary="+primary+"&limit="+limit+"&starting_after="+starting_after+"";
+        }
+
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
-                .url("https://api.clever.com/v3.0/users/"+Userid+"/schools")
+                .url(ApiUrl)
                 .get()
                 .addHeader("accept", "application/json")
                 .addHeader("authorization", token)
                 .build();
 
         Response response = client.newCall(request).execute();
-        if(!response.isSuccessful()) throw new ResourceNotFoundException("School Info","UserId", Userid);
-
+        if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND , "School Info Not found for UserId:-"+Userid);
         ResponseBody responseBody = client.newCall(request).execute().body();
-
-        GetSchoolForUser getSchoolForUser =  objectMapper.readValue(responseBody.string() , GetSchoolForUser.class);
-
-        return getSchoolForUser;
+        return objectMapper.readValue(responseBody.string() , GetSchoolForUser.class);
     }
 
 }

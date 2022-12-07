@@ -13,8 +13,7 @@ public class GetDistrictForSchool {
 
     @JsonProperty("data")
     private DataDTO data;
-    @JsonProperty("links")
-    private List<LinksDTO> links;
+
 
     public DataDTO getData() {
         return data;
@@ -24,11 +23,5 @@ public class GetDistrictForSchool {
         this.data = data;
     }
 
-    public List<LinksDTO> getLinks() {
-        return links;
-    }
 
-    public void setLinks(List<LinksDTO> links) {
-        this.links = links;
-    }
 }

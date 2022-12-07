@@ -11,6 +11,7 @@ import com.shivraj.demo.payload.school.getDistrictForSchool.GetDistrictForSchool
 import com.shivraj.demo.payload.school.getSchoolById.GetSchoolById;
 import com.shivraj.demo.payload.school.getSchoolByUser.GetSchoolByUser;
 import com.shivraj.demo.payload.school.getSectionForSchool.GetSectionForSchool;
+import com.shivraj.demo.payload.school.getTermsForSchool.GetTermsForSchool;
 import com.shivraj.demo.payload.school.getUsersBySchool.GetUsersBySchool;
 import com.shivraj.demo.service.AuthService;
 import com.shivraj.demo.service.SchoolService;
@@ -115,11 +116,24 @@ public class SchoolServiceImpl implements SchoolService {
     }
 
     @Override
-    public GetCoursesForSchool getCoursesForSchool(String token, String id) throws IOException {
+    public GetCoursesForSchool getCoursesForSchool(String token, String id , Integer limit, String starting_after) throws IOException {
+
+
+        authService.isValidAccessToken(token);
+
+        String start = "null";
+        String ApiUrl = null;
+
+        if(starting_after.equals(start)){
+            ApiUrl = "https://api.clever.com/v3.0/schools/"+id+"/courses?limit="+limit;
+        }
+        else {
+            ApiUrl = "https://api.clever.com/v3.0/schools/"+id+"/courses?limit="+limit+"&starting_after="+starting_after;
+        }
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("https://api.clever.com/v3.0/schools/"+id+"/courses")
+                .url(ApiUrl)
                 .get()
                 .addHeader("accept", "application/json")
                 .addHeader("authorization", token)
@@ -127,7 +141,7 @@ public class SchoolServiceImpl implements SchoolService {
 
         Response response = client.newCall(request).execute();
 
-        if(!response.isSuccessful()) throw new ResourceNotFoundException("Course Info","ID", id);
+        if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND ,"Course Info Not Found With School ID");
 
         ResponseBody responseBody = client.newCall(request).execute().body();
 
@@ -137,6 +151,8 @@ public class SchoolServiceImpl implements SchoolService {
 
     @Override
     public GetDistrictForSchool getDistrictForSchool(String token, String id) throws IOException {
+
+        authService.isValidAccessToken(token);
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
@@ -148,7 +164,7 @@ public class SchoolServiceImpl implements SchoolService {
 
         Response response = client.newCall(request).execute();
 
-        if(!response.isSuccessful()) throw new ResourceNotFoundException("District Info","ID", id);
+        if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"District Info Not Found With School ID"+id);
 
         ResponseBody responseBody = client.newCall(request).execute().body();
 
@@ -184,6 +200,38 @@ public class SchoolServiceImpl implements SchoolService {
         ResponseBody responseBody = client.newCall(request).execute().body();
         return objectMapper.readValue(responseBody.string() , GetSectionForSchool.class);
     }
+
+    @Override
+    public GetTermsForSchool getTermsForSchool(String token, String id, Integer limit, String starting_after) throws IOException {
+
+        authService.isValidAccessToken(token);
+
+        String start = "null";
+        String ApiUrl = null;
+
+        if(starting_after.equals(start)){
+            ApiUrl = "https://api.clever.com/v3.0/schools/"+id+"/terms?limit="+limit;
+        }
+        else {
+            ApiUrl = "https://api.clever.com/v3.0/schools/"+id+"/terms?limit="+limit+"&starting_after="+starting_after;
+        }
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(ApiUrl)
+                .get()
+                .addHeader("accept", "application/json")
+                .addHeader("authorization", token)
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "School id not found:-"+id);
+        ResponseBody responseBody = client.newCall(request).execute().body();
+        return objectMapper.readValue(responseBody.string() , GetTermsForSchool.class);
+    }
+
 //
 //    @Override
 //    public FinalSchool getAllSchoolForDistrict(AllSchool allSchool) {

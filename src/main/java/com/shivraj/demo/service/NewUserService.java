@@ -21,9 +21,9 @@ public interface NewUserService {
 
     public GetContactUserForStudent getContactUserForStudent(String token, String Userid , Integer limit , String starting_after) throws IOException;
 
-    public GetStudentsForTeacher getStudentsForTeacher(String token, String Userid) throws IOException;
+    public GetStudentsForTeacher getStudentsForTeacher(String token, String Userid ,Integer limit,String starting_after) throws IOException;
 
-    public GetTeacherForStudent getTeacherForStudent(String token, String Userid) throws IOException;
+    public GetTeacherForStudent getTeacherForStudent(String token, String Userid,Integer limit,String starting_after) throws IOException;
 
-    public GetSchoolForUser getSchoolForUser(String token , String Userid) throws IOException;
+    public GetSchoolForUser getSchoolForUser(String token , String Userid , String primary,Integer limit,String starting_after) throws IOException;
 }

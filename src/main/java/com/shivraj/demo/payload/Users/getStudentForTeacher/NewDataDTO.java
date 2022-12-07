@@ -10,8 +10,7 @@ public class NewDataDTO {
 
     @JsonProperty("data")
     private DataDTO data;
-    @JsonProperty("uri")
-    private String uri;
+
 
     public DataDTO getData() {
         return data;
@@ -21,11 +20,5 @@ public class NewDataDTO {
         this.data = data;
     }
 
-    public String getUri() {
-        return uri;
-    }
 
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
 }

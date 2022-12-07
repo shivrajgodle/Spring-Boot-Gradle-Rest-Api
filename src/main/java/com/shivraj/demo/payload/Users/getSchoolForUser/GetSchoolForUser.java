@@ -10,36 +10,9 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class GetSchoolForUser {
 
-    @JsonProperty("links")
-    private List<LinksDTO> links;
+
     @JsonProperty("data")
     private List<NewDataDTO> data;
-
-
-    public GetSchoolForUser() {
-        super();
-    }
-
-    public GetSchoolForUser(List<LinksDTO> links, List<NewDataDTO> data) {
-        this.links = links;
-        this.data = data;
-    }
-
-    @Override
-    public String toString() {
-        return "GetSchoolForUser{" +
-                "links=" + links +
-                ", data=" + data +
-                '}';
-    }
-
-    public List<LinksDTO> getLinks() {
-        return links;
-    }
-
-    public void setLinks(List<LinksDTO> links) {
-        this.links = links;
-    }
 
     public List<NewDataDTO> getData() {
         return data;

@@ -1,4 +1,4 @@
-package com.shivraj.demo.payload.school.getCoursesForSchool;
+package com.shivraj.demo.payload.school.getTermsForSchool;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -8,9 +8,7 @@ import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GetCoursesForSchool {
-
-
+public class GetTermsForSchool {
 
     @JsonProperty("data")
     private List<NewDataDTO> data;
