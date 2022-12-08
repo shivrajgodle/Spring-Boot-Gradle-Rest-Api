@@ -1,7 +1,6 @@
 package com.shivraj.demo.controller;
 
 import com.shivraj.demo.config.AppConstants;
-import com.shivraj.demo.entity.Page;
 import com.shivraj.demo.payload.auth.GetAccessToken;
 import com.shivraj.demo.payload.auth.responce.*;
 import com.shivraj.demo.payload.school.getAllSchool.AllSchool;
@@ -14,12 +13,10 @@ import com.shivraj.demo.service.NewUserService;
 import com.shivraj.demo.service.SchoolService;
 import org.json.simple.parser.ParseException;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 

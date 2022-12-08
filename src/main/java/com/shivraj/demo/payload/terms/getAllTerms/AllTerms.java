@@ -1,4 +1,4 @@
-package com.shivraj.demo.payload.terms;
+package com.shivraj.demo.payload.terms.getAllTerms;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -9,7 +9,6 @@ import java.util.List;
 public class AllTerms {
     private List<NewData> data;
 
-    private List<Links> links;
 
     public List<NewData> getData() {
         return data;
@@ -19,11 +18,4 @@ public class AllTerms {
         this.data = data;
     }
 
-    public List<Links> getLinks() {
-        return links;
-    }
-
-    public void setLinks(List<Links> links) {
-        this.links = links;
-    }
 }

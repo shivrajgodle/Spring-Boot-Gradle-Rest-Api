@@ -1,19 +1,22 @@
-package com.shivraj.demo.payload.terms;
+package com.shivraj.demo.payload.terms.getTermsById;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Data {
+public class DataDTO {
+
+    @JsonProperty("district")
     private String district;
-
-    private String end_date;
-
+    @JsonProperty("end_date")
+    private String endDate;
+    @JsonProperty("name")
     private String name;
-
-    private String start_date;
-
+    @JsonProperty("start_date")
+    private String startDate;
+    @JsonProperty("id")
     private String id;
 
     public String getDistrict() {
@@ -24,12 +27,12 @@ public class Data {
         this.district = district;
     }
 
-    public String getEnd_date() {
-        return end_date;
+    public String getEndDate() {
+        return endDate;
     }
 
-    public void setEnd_date(String end_date) {
-        this.end_date = end_date;
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
     public String getName() {
@@ -40,12 +43,12 @@ public class Data {
         this.name = name;
     }
 
-    public String getStart_date() {
-        return start_date;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setStart_date(String start_date) {
-        this.start_date = start_date;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
     public String getId() {

@@ -1,26 +1,20 @@
-package com.shivraj.demo.payload.district.getAllDistrict;
+package com.shivraj.demo.payload.sections.getUsersForSections;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
-
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GetAllDistrict {
-
-
+public class NewDataDTO {
     @JsonProperty("data")
-    private List<NewDataDTO> data;
+    private DataDTO data;
 
-
-    public List<NewDataDTO> getData() {
+    public DataDTO getData() {
         return data;
     }
 
-    public void setData(List<NewDataDTO> data) {
+    public void setData(DataDTO data) {
         this.data = data;
     }
-
 }

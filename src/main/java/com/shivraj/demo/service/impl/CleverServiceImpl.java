@@ -36,6 +36,7 @@ public class CleverServiceImpl implements CleverService {
 
         try{
             token = PostToken(NewUrl , Code , AppConstants.GRANT_TYPE);
+            System.out.println("token"+token);
         }
         catch(Exception e){
             e.printStackTrace();
@@ -140,7 +141,7 @@ public class CleverServiceImpl implements CleverService {
         c.setRedirect_uri(Url);
 
         String CleverAsJson = objectMapper.writeValueAsString(c);
-        System.out.println("body: "+CleverAsJson);
+        //System.out.println("body: "+CleverAsJson);
 
         OkHttpClient client = new OkHttpClient();
         MediaType mediaType = MediaType.parse("application/json");
@@ -155,6 +156,9 @@ public class CleverServiceImpl implements CleverService {
                 .build();
 
         Response response = client.newCall(request).execute();
+
+
+
         return response.body().string();
     }
 

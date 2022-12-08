@@ -5,6 +5,7 @@ import com.shivraj.demo.payload.courses.getAllCourses.AllCourses;
 import com.shivraj.demo.payload.courses.getCoursesForId.GetCoursesForId;
 import com.shivraj.demo.payload.courses.getDistrictForCourses.GetDistrictForCourse;
 import com.shivraj.demo.payload.courses.getSchoolsForCourses.GetSchoolsForCourses;
+import com.shivraj.demo.payload.courses.getSectionsForCourse.GetSectionsForCourse;
 import com.shivraj.demo.response.ResponseHandler;
 import com.shivraj.demo.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,7 @@ public class CourseController {
         }
     }
 
+    //Returns the schools for a course
     @GetMapping("/courses/{id}/schools")
     public ResponseEntity<Object> getSchoolsForCourses(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id ,
                                                        @RequestParam(value = "limit", defaultValue = AppConstants.LIMIT) Integer limit,
@@ -71,6 +73,20 @@ public class CourseController {
         }
     }
 
+    //Returns the sections for a course
+    @GetMapping("courses/{id}/sections")
+    public ResponseEntity<Object> getSectionForCourse(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id ,
+                                                      @RequestParam(value = "limit", defaultValue = AppConstants.LIMIT) Integer limit,
+                                                      @RequestParam(value = "starting_after", defaultValue = "null") String starting_after) throws IOException {
+
+        GetSectionsForCourse getSectionsForCourse = courseService.getSectionsForCourse(token,id,limit,starting_after);
+
+        if(getSectionsForCourse.getData().size() == 0){
+            return ResponseHandler.responseBuilder(getSectionsForCourse,"Section Not Found For Course",0);
+        }else {
+            return ResponseHandler.responseBuilder(getSectionsForCourse,"Section For Course Fetched Successfully !!!",1);
+        }
+    }
 
 
 }

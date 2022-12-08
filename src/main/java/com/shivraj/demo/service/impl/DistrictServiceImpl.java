@@ -34,6 +34,8 @@ public class DistrictServiceImpl implements DistrictService {
     @Override
     public GetAllDistrict getAllDistrict(String token) throws IOException {
 
+        authService.isValidAccessToken(token);
+
         OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
