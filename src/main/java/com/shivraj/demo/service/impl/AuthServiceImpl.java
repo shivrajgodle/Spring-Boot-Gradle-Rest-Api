@@ -5,6 +5,7 @@ import com.shivraj.demo.config.AppConstants;
 import com.shivraj.demo.entity.Clever;
 import com.shivraj.demo.entity.Token;
 import com.shivraj.demo.exception.ResourceNotFoundException;
+import com.shivraj.demo.exception.TokenNotFoundException;
 import com.shivraj.demo.payload.auth.GetAccessToken;
 import com.shivraj.demo.payload.meApi.MeResponce;
 import com.shivraj.demo.service.AuthService;
@@ -61,15 +62,12 @@ public class AuthServiceImpl implements AuthService {
 
 
     @Override
-    public Token getAccessToken(String url) throws IOException {
+    public Token getAccessToken(String token ,String url) throws IOException {
 
 
-        String token = null;
         String RedirectLink = extractUrls(url).toString();
         String NewUrl = RedirectLink.substring(1,50);
         String Code = RedirectLink.substring(56,76);
-
-
 
         Clever c = new Clever();
         c.setCode(Code);
@@ -77,31 +75,26 @@ public class AuthServiceImpl implements AuthService {
         c.setRedirect_uri(NewUrl);
 
         String CleverAsJson = objectMapper.writeValueAsString(c);
-        System.out.println("body: "+CleverAsJson);
+
+        MediaType mediaType = MediaType.parse("application/json");
+        RequestBody body = RequestBody.create(mediaType, CleverAsJson);
+
 
         OkHttpClient client = new OkHttpClient();
-        MediaType mediaType = MediaType.parse("application/json");
-        com.squareup.okhttp.RequestBody body = com.squareup.okhttp.RequestBody.create(mediaType, CleverAsJson);
 
         Request request = new Request.Builder()
                 .url("https://clever.com/oauth/tokens")
                 .post(body)
                 .addHeader("accept", "application/json")
-                .addHeader("Authorization", "Basic "+AppConstants.AUTH_TOKEN)
+                .addHeader("Authorization", token)
                 .addHeader("content-type", "application/json")
                 .build();
 
-//        Response response = client.newCall(request).execute();
-//
-//        if(!response.isSuccessful()) throw new TokenNotFoundException("Auth Token","Authorization Code",url);
+        Response response = client.newCall(request).execute();
 
+        if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND , "Invalid Auth Token Or Enter Active Redirect Url !!!");
 
-        ResponseBody responseBody = client.newCall(request).execute().body();
-
-
-        Token t = objectMapper.readValue(responseBody.string() , Token.class);
-
-        return t;
+       return objectMapper.readValue(response.body().string() , Token.class);
 
     }
 

@@ -3,14 +3,22 @@ package com.shivraj.demo.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shivraj.demo.config.AppConstants;
 import com.shivraj.demo.entity.Clever;
+import com.shivraj.demo.entity.Token;
+import com.shivraj.demo.payload.Users.getUserById.GetUserById;
+import com.shivraj.demo.payload.auth.meinfo.MeInfo;
+import com.shivraj.demo.service.AuthService;
 import com.shivraj.demo.service.CleverService;
+import com.shivraj.demo.service.NewUserService;
 import com.squareup.okhttp.*;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import java.io.IOException;
@@ -23,30 +31,29 @@ import java.util.regex.Pattern;
 @Service
 public class CleverServiceImpl implements CleverService {
 
+    @Autowired
+    private AuthService authService;
+
+    @Autowired
+    private NewUserService userService;
+
+
     String access_token = null;
     Response response = null;
 
+
     @Override
-    public String getAccessToken(String url) throws IOException, ParseException {
+    public GetUserById getAccessToken(String url) throws IOException, ParseException {
 
-        String token = null;
-        String RedirectLink = extractUrls(url).toString();
-        String NewUrl = RedirectLink.substring(1,50);
-        String Code = RedirectLink.substring(56,76);
 
-        try{
-            token = PostToken(NewUrl , Code , AppConstants.GRANT_TYPE);
-            System.out.println("token"+token);
-        }
-        catch(Exception e){
-            e.printStackTrace();
-        }
+        Token token = authService.getAccessToken(AppConstants.AUTH_TOKEN,url);
 
-        String finalInfo = GetMeInfo(token);
-        System.out.println("Me Info"+finalInfo);
+        access_token = token.getAccessToken();
 
-      String info = getUserInfo(finalInfo);
-      return info;
+        MeInfo meInfo = GetMeInfo(token);
+
+        GetUserById getUserById = userService.getUserById("Bearer "+token.getAccessToken(),meInfo.getData().getId());
+      return getUserById;
     }
 
     public String getApiCall(String url , String token) throws IOException {
@@ -95,15 +102,8 @@ public class CleverServiceImpl implements CleverService {
             String id = (String) data.get("id");
             String district = (String) data.get("district");
 
-
-            System.out.println("Type is :-"+type);
-            System.out.println("Id is :-"+id);
-            System.out.println("access_token:-"+this.access_token);
-
             String url = "https://api.clever.com/v3.0/users/"+id;
             String token = "Bearer "+access_token;
-
-            System.out.println("guru"+token);
 
             String apiResponse = getApiCall(url,token);
 
@@ -111,23 +111,25 @@ public class CleverServiceImpl implements CleverService {
 
     }
 
-    public String GetMeInfo(String token) throws ParseException, IOException {
+    public MeInfo GetMeInfo(Token token) throws ParseException, IOException {
 
-        JSONParser jsonParser = new JSONParser();
+        ObjectMapper objectMapper = new ObjectMapper();
 
-      JSONObject jsonObject = (JSONObject) jsonParser.parse(token);
-      access_token = (String) jsonObject.get("access_token");
-      String token_type = (String) jsonObject.get("token_type");
+        OkHttpClient client = new OkHttpClient();
 
-        System.out.println("access_token"+access_token);
-        System.out.println("token_type"+token_type);
+        Request request = new Request.Builder()
+                .url("https://api.clever.com/v3.0/me")
+                .get()
+                .addHeader("accept", "application/json")
+                .addHeader("Authorization", "Bearer "+token.getAccessToken())
+                .build();
 
-        String url = "https://api.clever.com/v3.0/me";
-        String ctoken = "Bearer "+access_token;
+        Response response = client.newCall(request).execute();
 
-        String apiResponse = getApiCall(url,ctoken);
+        if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND , "Invalid Auth Token Or Enter Active Redirect Url !!!");
 
-        return apiResponse;
+        return objectMapper.readValue(response.body().string() , MeInfo.class);
+
     }
 
 
@@ -141,7 +143,7 @@ public class CleverServiceImpl implements CleverService {
         c.setRedirect_uri(Url);
 
         String CleverAsJson = objectMapper.writeValueAsString(c);
-        //System.out.println("body: "+CleverAsJson);
+
 
         OkHttpClient client = new OkHttpClient();
         MediaType mediaType = MediaType.parse("application/json");
@@ -157,7 +159,7 @@ public class CleverServiceImpl implements CleverService {
 
         Response response = client.newCall(request).execute();
 
-
+        if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "Check URl & token");
 
         return response.body().string();
     }

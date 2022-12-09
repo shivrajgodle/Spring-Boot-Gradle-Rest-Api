@@ -9,6 +9,7 @@ import com.shivraj.demo.payload.Users.getSchoolForUser.GetSchoolForUser;
 import com.shivraj.demo.payload.Users.getSectionByUser.UserWiseSection;
 import com.shivraj.demo.payload.Users.getStudentForTeacher.GetStudentsForTeacher;
 import com.shivraj.demo.payload.Users.getTeacherForStudent.GetTeacherForStudent;
+import com.shivraj.demo.payload.Users.getUserById.GetUserById;
 import com.shivraj.demo.response.ResponseHandler;
 import com.shivraj.demo.service.NewUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,7 +135,20 @@ public class NewUserController {
         }else {
             return ResponseHandler.responseBuilder(getSchoolForUser , "School Info for User Fetched Successfully",1);
         }
+    }
 
+
+
+    @GetMapping("users/{id}")
+    public ResponseEntity<Object> getUserById(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id) throws IOException {
+
+        GetUserById getUserById = newUserService.getUserById(token,id);
+
+        if(getUserById.getData().getId().isEmpty()){
+            return ResponseHandler.responseBuilder(getUserById , "User Info Not found for UserId:-"+id,0);
+        }else {
+            return ResponseHandler.responseBuilder(getUserById , "User Info  Fetched Successfully",1);
+        }
     }
 
 }

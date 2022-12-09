@@ -8,6 +8,7 @@ import com.shivraj.demo.payload.Users.getSchoolForUser.GetSchoolForUser;
 import com.shivraj.demo.payload.Users.getSectionByUser.UserWiseSection;
 import com.shivraj.demo.payload.Users.getStudentForTeacher.GetStudentsForTeacher;
 import com.shivraj.demo.payload.Users.getTeacherForStudent.GetTeacherForStudent;
+import com.shivraj.demo.payload.Users.getUserById.GetUserById;
 
 import java.io.IOException;
 
@@ -24,6 +25,8 @@ public interface NewUserService {
     public GetStudentsForTeacher getStudentsForTeacher(String token, String Userid ,Integer limit,String starting_after) throws IOException;
 
     public GetTeacherForStudent getTeacherForStudent(String token, String Userid,Integer limit,String starting_after) throws IOException;
+
+    public GetUserById getUserById(String token, String Userid) throws IOException;
 
     public GetSchoolForUser getSchoolForUser(String token , String Userid , String primary,Integer limit,String starting_after) throws IOException;
 }

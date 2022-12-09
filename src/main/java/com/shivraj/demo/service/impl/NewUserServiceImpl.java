@@ -11,6 +11,7 @@ import com.shivraj.demo.payload.Users.getSchoolForUser.GetSchoolForUser;
 import com.shivraj.demo.payload.Users.getSectionByUser.UserWiseSection;
 import com.shivraj.demo.payload.Users.getStudentForTeacher.GetStudentsForTeacher;
 import com.shivraj.demo.payload.Users.getTeacherForStudent.GetTeacherForStudent;
+import com.shivraj.demo.payload.Users.getUserById.GetUserById;
 import com.shivraj.demo.service.AuthService;
 import com.shivraj.demo.service.NewUserService;
 import com.squareup.okhttp.OkHttpClient;
@@ -221,6 +222,28 @@ public class NewUserServiceImpl implements NewUserService {
         if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND ,"Teacher Info Not found for Student UserId :-"+ Userid);
         ResponseBody responseBody = client.newCall(request).execute().body();
         return objectMapper.readValue(responseBody.string() , GetTeacherForStudent.class);
+    }
+
+    @Override
+    public GetUserById getUserById(String token, String Userid) throws IOException {
+
+        System.out.println("token"+token);
+        System.out.println("Userid"+Userid);
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url("https://api.clever.com/v3.0/users/"+Userid)
+                .get()
+                .addHeader("accept", "application/json")
+                .addHeader("authorization", token)
+                .build();
+
+        Response response = client.newCall(request).execute();
+
+        if(!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND , "User Info Not Found For User Id");
+
+      return objectMapper.readValue(response.body().string() , GetUserById.class);
     }
 
     @Override

@@ -14,7 +14,7 @@ public interface AuthService {
 
     public boolean isValidAuthToken(String token) throws ResponseStatusException, IOException;
 
-    public Token getAccessToken(String url) throws IOException;
+    public Token getAccessToken(String token ,String url) throws IOException;
 
     public MeResponce GetMeInfo(String token) throws IOException;
 
