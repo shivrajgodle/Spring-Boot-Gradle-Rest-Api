@@ -6,6 +6,7 @@ import com.shivraj.demo.exception.ResourceNotFoundException;
 import com.shivraj.demo.payload.terms.getAllTerms.AllTerms;
 import com.shivraj.demo.payload.terms.getDistrictForTerms.GetDistrictForTerms;
 import com.shivraj.demo.payload.terms.getSchoolForTerms.GetSchoolsForTerms;
+import com.shivraj.demo.payload.terms.getSectionsForTerm.GetSectionsForTerm;
 import com.shivraj.demo.payload.terms.getTermsById.GetTermsById;
 import com.shivraj.demo.service.AuthService;
 import com.shivraj.demo.service.TermsService;
@@ -134,6 +135,39 @@ public class TermsServiceImpl implements TermsService {
         ResponseBody responseBody = client.newCall(request).execute().body();
 
         return objectMapper.readValue(responseBody.string() , GetSchoolsForTerms.class);
+    }
+
+    @Override
+    public GetSectionsForTerm getSectionsForTerm(String token, String id, Integer limit, String starting_after) throws IOException {
+
+        authService.isValidAccessToken(token);
+
+        String start = "null";
+        String ApiUrl = null;
+
+        if(starting_after.equals(start)){
+            ApiUrl = "https://api.clever.com/v3.0/terms/"+id+"/sections?limit="+limit;
+        }
+        else {
+            ApiUrl = "https://api.clever.com/v3.0/terms/"+id+"/sections?limit="+limit+"&starting_after="+starting_after;
+        }
+
+        OkHttpClient client = new OkHttpClient();
+
+        Request request = new Request.Builder()
+                .url(ApiUrl)
+                .get()
+                .addHeader("accept", "application/json")
+                .addHeader("authorization", token)
+                .build();
+
+//        Response response = client.newCall(request).execute();
+
+//        if (!response.isSuccessful()) throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Section Info Not Found");
+
+        ResponseBody responseBody = client.newCall(request).execute().body();
+
+        return objectMapper.readValue(responseBody.string() , GetSectionsForTerm.class);
     }
 
 

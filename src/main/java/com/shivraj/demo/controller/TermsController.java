@@ -4,6 +4,7 @@ import com.shivraj.demo.config.AppConstants;
 import com.shivraj.demo.payload.terms.getAllTerms.AllTerms;
 import com.shivraj.demo.payload.terms.getDistrictForTerms.GetDistrictForTerms;
 import com.shivraj.demo.payload.terms.getSchoolForTerms.GetSchoolsForTerms;
+import com.shivraj.demo.payload.terms.getSectionsForTerm.GetSectionsForTerm;
 import com.shivraj.demo.payload.terms.getTermsById.GetTermsById;
 import com.shivraj.demo.response.ResponseHandler;
 import com.shivraj.demo.service.TermsService;
@@ -71,6 +72,23 @@ public class TermsController {
             return ResponseHandler.responseBuilder(getSchoolsForTerms,"School Info Not Found",0);
         }else {
             return ResponseHandler.responseBuilder(getSchoolsForTerms,"School Info Fetched Successfully !!!",1);
+        }
+    }
+
+
+
+    //Returns the Sections for a term
+    @GetMapping("terms/{id}/sections")
+    public ResponseEntity<Object> getSectionsForTerm(@RequestHeader(AppConstants.HEADER_STRING) String token , @PathVariable String id ,
+                                                     @RequestParam(value = "limit", defaultValue = AppConstants.LIMIT) Integer limit,
+                                                     @RequestParam(value = "starting_after", defaultValue = "null") String starting_after) throws IOException {
+
+        GetSectionsForTerm getSectionsForTerm = termsService.getSectionsForTerm(token , id , limit , starting_after);
+
+        if(getSectionsForTerm.getData().size() == 0){
+            return ResponseHandler.responseBuilder(getSectionsForTerm,"Section Info Not Found",0);
+        }else {
+            return ResponseHandler.responseBuilder(getSectionsForTerm,"Section Info Fetched Successfully !!!",1);
         }
     }
 
